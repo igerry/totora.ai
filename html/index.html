@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Totora - Magical Bedtime Stories for Children</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <img src="images/app-icon-80.png" alt="Totora" class="logo" loading="lazy">
+                    <span class="logo-text">Totora</span>
+                </div>
+                <div class="nav-menu">
+                    <a href="#features" class="nav-link" data-i18n="nav_features">Features</a>
+                    <a href="#screenshots" class="nav-link" data-i18n="nav_screenshots">Screenshots</a>
+                    <a href="#support" class="nav-link" data-i18n="nav_support">Support</a>
+                    <a href="#privacy" class="nav-link" data-i18n="nav_privacy">Privacy</a>
+                    <div class="language-selector">
+                        <select id="languageSelect" class="language-select">
+                            <option value="en">English</option>
+                            <option value="zh-CN">简体中文</option>
+                            <option value="zh-TW">繁體中文</option>
+                            <option value="ja">日本語</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title" data-i18n="hero_title">Totora: Magical Bedtime Stories</h1>
+                <p class="hero-subtitle" data-i18n="hero_subtitle">Creating quality parent-child moments with personalized AI-powered storytelling</p>
+                <div class="hero-buttons">
+                    <div class="store-buttons">
+                        <a href="#" class="store-button app-store-button" aria-label="Download on the App Store">
+                            <div class="store-button-content">
+                                <div class="store-icon">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                        <path d="M12 2L2 7L12 12L22 7L12 2Z"/>
+                                        <path d="M2 17L12 22L22 17"/>
+                                        <path d="M2 12L12 17L22 12"/>
+                                    </svg>
+                                </div>
+                                <div class="store-text">
+                                    <div class="store-line-small">Download on the</div>
+                                    <div class="store-line-large">App Store</div>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="#" class="store-button play-store-button" aria-label="Get it on Google Play">
+                            <div class="store-button-content">
+                                <div class="store-icon">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734c0-.446.3-.828.61-.92zm10.89 10.893l-9.937 9.937 8.302-4.876 1.635 1.635zm-9.937-9.937l9.937 9.937 1.635-1.635 2.318-4.067zm11.598 5.724c.626.37 1.352 1.06 1.352 2.506 0 1.446-.726 2.136-1.352 2.506l-1.835-3.194 1.835-3.194z"/>
+                                    </svg>
+                                </div>
+                                <div class="store-text">
+                                    <div class="store-line-small">GET IT ON</div>
+                                    <div class="store-line-large">Google Play</div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <button class="btn btn-secondary" data-i18n="btn_learn_more">Learn More</button>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="images/hero-main.png" alt="Totora App Preview" class="hero-img" loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title" data-i18n="features_title">Magical Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon feature-blue">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7L12 12L22 7L12 2Z"></path>
+                            <path d="M2 17L12 22L22 17"></path>
+                            <path d="M2 12L12 17L22 12"></path>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title" data-i18n="feature1_title">AI-Powered Stories</h3>
+                    <p class="feature-description" data-i18n="feature1_desc">Generate unique, personalized bedtime stories using advanced AI technology</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon feature-green">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title" data-i18n="feature2_title">Voice Cloning</h3>
+                    <p class="feature-description" data-i18n="feature2_desc">Clone your voice to narrate stories in a familiar, comforting tone</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon feature-orange">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title" data-i18n="feature3_title">Customizable Elements</h3>
+                    <p class="feature-description" data-i18n="feature3_desc">Personalize characters, themes, and morals to match your child's interests</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon feature-purple">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title" data-i18n="feature4_title">Age-Appropriate Content</h3>
+                    <p class="feature-description" data-i18n="feature4_desc">Stories tailored to different age groups with appropriate themes and complexity</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon feature-green">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5Z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title" data-i18n="feature5_title">Magic Grass System</h3>
+                    <p class="feature-description" data-i18n="feature5_desc">Add your personal magic touch to stories with the magical grass enhancement system</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon feature-teal">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2a3 3 0 0 0-3 3c0 1.11.6 2.08 1.5 2.6V17a2.5 2.5 0 0 0 5 0V7.6C16.4 7.08 17 6.11 17 5a3 3 0 0 0-3-3Z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title" data-i18n="feature6_title">Voice Input</h3>
+                    <p class="feature-description" data-i18n="feature6_desc">Speak your magic aloud with real-time voice recognition and speech-to-text conversion</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon feature-orange">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title" data-i18n="feature7_title">Story Library</h3>
+                    <p class="feature-description" data-i18n="feature7_desc">Save, organize, and revisit your favorite bedtime stories in your personal collection</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon feature-blue">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 6v6l4 2"></path>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title" data-i18n="feature8_title">Word Highlighting</h3>
+                    <p class="feature-description" data-i18n="feature8_desc">Follow along with real-time word highlighting synchronized with text-to-speech narration</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screenshots Section -->
+    <section id="screenshots" class="screenshots">
+        <div class="container">
+            <h2 class="section-title" data-i18n="screenshots_title">App Screenshots</h2>
+
+            <!-- Dynamic Screenshots Carousel -->
+            <div class="screenshots-carousel">
+                <button class="carousel-btn prev-btn" aria-label="Previous screenshot">❮</button>
+
+                <div class="carousel-container">
+                    <div class="screenshot-track" id="screenshot-track">
+                        <!-- Screenshots will be dynamically inserted based on current language -->
+                    </div>
+                </div>
+
+                <button class="carousel-btn next-btn" aria-label="Next screenshot">❯</button>
+            </div>
+
+            <!-- Carousel Indicators -->
+            <div class="carousel-indicators" id="carousel-indicators"></div>
+        </div>
+    </section>
+
+    <!-- Support Section -->
+    <section id="support" class="support">
+        <div class="container">
+            <h2 class="section-title" data-i18n="support_title">Professional Support</h2>
+
+            <div class="support-content">
+                <h3 data-i18n="support_subtitle">Comprehensive Customer Care</h3>
+                <p data-i18n="support_description">Totora provides professional support services to ensure you and your family have the best magical storytelling experience.</p>
+            </div>
+
+            <!-- Support Channels -->
+            <div class="support-grid">
+                <div class="support-card">
+                    <div class="support-card-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 8l7.89 5.26a2 2 0 0 1 2.11 2l3.89 2.6 3.89-2.6a2 2 0 0 1 2.11-2L3 8"/>
+                            <path d="M14 2L7 12 14 22"/>
+                            <path d="M3 8l3.5 2.5L10 5"/>
+                            <path d="M21 8l-3.5 2.5L14 5"/>
+                        </svg>
+                    </div>
+                    <h3 data-i18n="support_contact_title">Contact Support</h3>
+                    <p data-i18n="support_contact_desc">Get personalized help from our expert team</p>
+                    <ul class="contact-details">
+                        <li>
+                            <strong>Email:</strong>
+                            <a href="mailto:support@totora.app" class="contact-link">support@totora.app</a>
+                        </li>
+                        <li>
+                            <strong>Business Hours:</strong>
+                            <span>Mon-Fri 9AM-6PM (Your Time Zone)</span>
+                        </li>
+                        <li>
+                            <strong>Response Time:</strong>
+                            <span>Within 24 hours</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="support-card">
+                    <div class="support-card-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3a3 3 0 0 1-5.83-1c0-2 3-3 3-3z"/>
+                            <path d="M12 12v9"/>
+                        </svg>
+                    </div>
+                    <h3 data-i18n="support_help_center_title">Help Center</h3>
+                    <p data-i18n="support_help_center_desc">Self-service resources and guides</p>
+                    <ul class="help-links">
+                        <li><a href="#" data-i18n="support_getting_started">Getting Started Guide</a></li>
+                        <li><a href="#" data-i18n="support_user_manual">User Manual</a></li>
+                        <li><a href="#" data-i18n="support_troubleshooting">Troubleshooting</a></li>
+                        <li><a href="#" data-i18n="support_video_tutorials">Video Tutorials</a></li>
+                    </ul>
+                </div>
+
+                <div class="support-card">
+                    <div class="support-card-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 8A6 6 0 0 0 6 2v10a6 6 0 0 0 6-2v-1M6 12a6 6 0 0 0-6 2v10a6 6 0 0 0 6-2v-1"/>
+                            <circle cx="9" cy="16" r="1"/>
+                            <circle cx="15" cy="16" r="1"/>
+                        </svg>
+                    </div>
+                    <h3 data-i18n="support_community_title">Community Forum</h3>
+                    <p data-i18n="support_community_desc">Connect with other Totora families</p>
+                    <div class="stats">
+                        <div class="stat">
+                            <span class="stat-number" data-i18n="community_users">10,000+</span>
+                            <span class="stat-label" data-i18n="community_users_label">Active Users</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number" data-i18n="community_stories">50,000+</span>
+                            <span class="stat-label" data-i18n="community_stories_label">Stories Created</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Section -->
+            <div class="faq-section">
+                <h3 data-i18n="support_faqs_title">Frequently Asked Questions</h3>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <h4 data-i18n="faq1_title">How does voice cloning work in Totora?</h4>
+                        <div class="faq-icon">+</div>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p data-i18n="faq1_answer">Totora uses advanced voice synthesis technology to create a digital replica of your voice. Simply record a short audio sample, and our AI will learn your unique vocal characteristics. The cloned voice can then be used to narrate stories, providing children with the comfort and familiarity of a parent's voice during bedtime storytelling.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <h4 data-i18n="faq2_title">Is my child's data safe and private?</h4>
+                        <div class="faq-icon">+</div>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p data-i18n="faq2_answer">Absolutely. Totora is built with privacy as a top priority. All voice recordings and personal data are stored locally on your device using industry-standard encryption. We never collect, store, or share any personal information about children. Parents have complete control over data through the app settings, including the ability to delete any information at any time.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <h4 data-i18n="faq3_title">Can I use Totora without an internet connection?</h4>
+                        <div class="faq-icon">+</div>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p data-i18n="faq3_answer">Yes! Once you've downloaded the necessary AI models, Totora can create stories offline. However, you'll need an internet connection for initial setup, model downloads, and accessing certain advanced features like voice recognition and software updates.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <h4 data-i18n="faq4_title">What devices are compatible with Totora?</h4>
+                        <div class="faq-icon">+</div>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p data-i18n="faq4_answer">Totora is optimized for iOS devices with iOS 16.0 or later. While it works on iPhone 12 and newer models, we recommend iPhone 14 or newer for the best experience. iPad support is currently in development and will be available in future updates.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <h4 data-i18n="faq5_title">How does the "Magic Grass" system work?</h4>
+                        <div class="faq-icon">+</div>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p data-i18n="faq5_answer">Magic Grass is Totora's in-app enhancement system that allows you to add personal touches to stories. You earn Magic Grass through regular app usage and achievements, then spend it to unlock advanced story features like longer narratives, custom elements, and enhanced storytelling capabilities.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <h4 data-i18n="faq6_title">Can I export or share stories I've created?</h4>
+                        <div class="faq-icon">+</div>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p data-i18n="faq6_answer">Yes! Stories created in Totora are saved to your personal library and can be exported as text files or shared directly with family members. You can also bookmark favorite stories for quick access during bedtime routines.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Test FAQ without translation -->
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <h4>Test Question - This should work</h4>
+                        <div class="faq-icon">+</div>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>This is a test answer that should be visible when you click the question above. If you can see this, the FAQ system is working correctly.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Technical Requirements -->
+            <div class="tech-requirements">
+                <h3 data-i18n="support_requirements_title">Technical Requirements</h3>
+                <div class="tech-grid">
+                    <div class="tech-item">
+                        <h4 data-i18n="req_platform_title">Platform</h4>
+                        <ul>
+                            <li data-i18n="req_ios">iOS 16.0 or later</li>
+                            <li data-i18n="req_android">Android 8.0+ (coming soon)</li>
+                        </ul>
+                    </div>
+                    <div class="tech-item">
+                        <h4 data-i18n="req_devices_title">Recommended Devices</h4>
+                        <ul>
+                            <li data-i18n="req_iphone">iPhone 14 Pro/Pro Max or newer</li>
+                            <li data-i18n="req_memory">4GB RAM minimum for optimal performance</li>
+                        </ul>
+                    </div>
+                    <div class="tech-item">
+                        <h4 data-i18n="req_storage_title">Storage</h4>
+                        <ul>
+                            <li data-i18n="req_app_size">500MB app size</li>
+                            <li data-i18n="req_models">200-500MB for AI models</li>
+                            <li data-i18n="req_stories">Additional space for story library</li>
+                        </ul>
+                    </div>
+                    <div class="tech-item">
+                        <h4 data-i18n="req_permissions_title">Required Permissions</h4>
+                        <ul>
+                            <li data-i18n="req_microphone">Microphone access for voice input</li>
+                            <li data-i18n="req_speech">Speech recognition for voice commands</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Privacy Section -->
+    <section id="privacy" class="privacy">
+        <div class="container">
+            <h2 class="section-title" data-i18n="privacy_title">Privacy Policy</h2>
+            <div class="privacy-content">
+                    <div class="privacy-grid">
+                        <div class="privacy-section">
+                            <h3 data-translate="privacy_information_title">Information We Collect</h3>
+                            <div class="privacy-item">
+                                <h4 data-translate="privacy_voice_data">Voice Data</h4>
+                                <p data-translate="privacy_voice_data_desc">We collect voice samples when you choose to create personalized stories. Your voice is used solely to generate custom storytelling experiences and is not shared with any third parties.</p>
+                            </div>
+                            <div class="privacy-item">
+                                <h4 data-translate="privacy_stories">Story Content</h4>
+                                <p data-translate="privacy_stories_desc">Stories you create and save are stored locally on your device. We do not access or analyze your personal story content unless you explicitly choose to share it with our support team for troubleshooting purposes.</p>
+                            </div>
+                            <div class="privacy-item">
+                                <h4 data-translate="privacy_usage">Usage Analytics</h4>
+                                <p data-translate="privacy_usage_desc">We collect anonymous usage data to improve our app, including which features are used most frequently and crash reports. No personally identifiable information is collected.</p>
+                            </div>
+                        </div>
+
+                        <div class="privacy-section">
+                            <h3 data-translate="privacy_usage_title">How We Use Your Data</h3>
+                            <div class="privacy-item">
+                                <h4 data-translate="privacy_personalization">Personalization</h4>
+                                <p data-translate="privacy_personalization_desc">Your voice data is used to create personalized storytelling experiences with custom voice cloning for your children's bedtime stories.</p>
+                            </div>
+                            <div class="privacy-item">
+                                <h4 data-translate="privacy_improvement">Service Improvement</h4>
+                                <p data-translate="privacy_improvement_desc">Anonymous usage data helps us identify bugs, improve performance, and develop new features that families will love.</p>
+                            </div>
+                            <div class="privacy-item">
+                                <h4 data-translate="privacy_support">Customer Support</h4>
+                                <p data-translate="privacy_support_desc">If you contact support, we may use relevant data to diagnose and resolve technical issues, with your explicit consent.</p>
+                            </div>
+                        </div>
+
+                        <div class="privacy-section">
+                            <h3 data-translate="privacy_security_title">Data Security & Protection</h3>
+                            <div class="privacy-item">
+                                <h4 data-translate="privacy_local_storage">Local Storage</h4>
+                                <p data-translate="privacy_local_storage_desc">All personal data including voice samples and stories are stored locally on your device using iOS secure storage mechanisms.</p>
+                            </div>
+                            <div class="privacy-item">
+                                <h4 data-translate="privacy_encryption">Encryption</h4>
+                                <p data-translate="privacy_encryption_desc">Voice data is encrypted during transmission and storage using industry-standard encryption protocols.</p>
+                            </div>
+                            <div class="privacy-item">
+                                <h4 data-translate="privacy_no_third_party">No Third-Party Sharing</h4>
+                                <p data-translate="privacy_no_third_party_desc">We never sell, rent, or share your personal data with third parties for marketing or advertising purposes.</p>
+                            </div>
+                        </div>
+
+                        <div class="privacy-section">
+                            <h3 data-translate="privacy_parental_title">Parental Controls & Safety</h3>
+                            <div class="privacy-item">
+                                <h4 data-translate="privacy_parental_gate">Parental Gate</h4>
+                                <p data-translate="privacy_parental_gate_desc">All features that could lead to purchases or external links are protected by age-appropriate parental controls.</p>
+                            </div>
+                            <div class="privacy-item">
+                                <h4 data-translate="privacy_age_appropriate">Age-Appropriate Content</h4>
+                                <p data-translate="privacy_age_appropriate_desc">All story content is carefully curated to be age-appropriate and educational for children aged 3-12 years.</p>
+                            </div>
+                            <div class="privacy-item">
+                                <h4 data-translate="privacy_no_ads">No Advertising</h4>
+                                <p data-translate="privacy_no_ads_desc">Totora contains no third-party advertising or behavioral tracking. Your family's privacy is our priority.</p>
+                            </div>
+                        </div>
+
+                        <div class="privacy-section">
+                            <h3 data-translate="privacy_rights_title">Your Privacy Rights</h3>
+                            <div class="privacy-item">
+                                <h4 data-translate="privacy_access">Access & Correction</h4>
+                                <p data-translate="privacy_access_desc">You can access, modify, or delete your voice data and stories at any time through the app settings.</p>
+                            </div>
+                            <div class="privacy-item">
+                                <h4 data-translate="privacy_data_export">Data Export</h4>
+                                <p data-translate="privacy_data_export_desc">You can export all your stories and data from the app settings at any time.</p>
+                            </div>
+                            <div class="privacy-item">
+                                <h4 data-translate="privacy_account_deletion">Account Deletion</h4>
+                                <p data-translate="privacy_account_deletion_desc">You can delete all your data and voice models from the app settings. Deleted data cannot be recovered.</p>
+                            </div>
+                        </div>
+
+                        <div class="privacy-section">
+                            <h3 data-translate="privacy_contact_title">Privacy Questions & Contact</h3>
+                            <div class="privacy-item">
+                                <h4 data-translate="privacy_updates">Privacy Policy Updates</h4>
+                                <p data-translate="privacy_updates_desc">We will notify you of any significant changes to our privacy practices through the app or email if you've provided contact information.</p>
+                            </div>
+                            <div class="privacy-item">
+                                <h4 data-translate="privacy_contact_privacy">Privacy Contact</h4>
+                                <p data-translate="privacy_contact_privacy_desc">For privacy-related questions or concerns, contact our Data Protection Officer at privacy@totora.app. We respond to privacy inquiries within 48 hours.</p>
+                            </div>
+                            <div class="privacy-item">
+                                <h4 data-translate="policy_effective_date">Policy Effective Date</h4>
+                                <p data-translate="privacy_effective_date_desc">This privacy policy is effective from December 1, 2024, and was last updated on November 6, 2024.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="images/app-icon-30.png" alt="Totora" class="footer-logo-img" loading="lazy">
+                    <span class="footer-logo-text">Totora</span>
+                </div>
+                <div class="footer-links">
+                    <a href="#support" class="footer-link" data-i18n="footer_support">Support</a>
+                    <a href="#privacy" class="footer-link" data-i18n="footer_privacy">Privacy</a>
+                    <a href="#" class="footer-link" data-i18n="footer_terms">Terms of Service</a>
+                </div>
+                <div class="footer-copyright">
+                    <p>&copy; 2025 Totora. <span data-i18n="footer_rights">All rights reserved.</span></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
