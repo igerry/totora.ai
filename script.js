@@ -329,7 +329,7 @@ class ScreenshotCarousel {
             slide.appendChild(loadingIndicator);
 
             const img = document.createElement('img');
-            const imageSrc = `images/screenshots/${langPath}/${langPath}-${i}-hq.png`;
+            const imageSrc = `images/screenshots/${langPath}/${i}-hq.png`;
             img.src = imageSrc;
             img.alt = `Totora App Screenshot ${i} - ${this.currentLanguage}`;
             img.className = 'screenshot-img';
@@ -338,20 +338,20 @@ class ScreenshotCarousel {
 
             let fallbackAttempted = false;
 
-            // Add comprehensive error handling with English fallback
+            // Add error handling with fallbacks
             img.addEventListener('error', () => {
                 if (!fallbackAttempted) {
                     fallbackAttempted = true;
                     console.warn(`Failed to load HQ screenshot: ${img.src}`);
 
                     // Try fallback to non-hq version first
-                    const nonHqSrc = `images/screenshots/${langPath}/${langPath}-${i}.png`;
+                    const nonHqSrc = `images/screenshots/${langPath}/${i}.png`;
                     console.log(`Trying non-HQ fallback: ${nonHqSrc}`);
                     img.src = nonHqSrc;
                 } else {
                     // If non-HQ fails, try English HQ version
                     console.warn(`Failed to load non-HQ screenshot, trying English fallback`);
-                    const englishHqSrc = `images/screenshots/en/en-${i}-hq.png`;
+                    const englishHqSrc = `images/screenshots/en/${i}-hq.png`;
                     console.log(`Trying English HQ fallback: ${englishHqSrc}`);
                     img.src = englishHqSrc;
                     img.alt = `Totora App Screenshot ${i} - English`;
@@ -359,25 +359,9 @@ class ScreenshotCarousel {
                     // Add final error handler for English fallback
                     img.addEventListener('error', () => {
                         console.error(`Failed to load English HQ screenshot, trying English non-HQ`);
-                        const englishSrc = `images/screenshots/en/en-${i}.png`;
+                        const englishSrc = `images/screenshots/en/${i}.png`;
                         console.log(`Trying English non-HQ fallback: ${englishSrc}`);
                         img.src = englishSrc;
-
-                        // Final fallback - show placeholder if English also fails
-                        img.addEventListener('error', () => {
-                            console.error(`All screenshot attempts failed for screenshot ${i}`);
-                            loadingIndicator.style.display = 'none';
-                            img.style.display = 'none';
-                            const placeholder = document.createElement('div');
-                            placeholder.className = 'screenshot-placeholder';
-                            placeholder.innerHTML = `<div style="padding: 30px; background: #f8f9fa; border: 2px dashed #dee2e6; border-radius: 12px; text-align: center; color: #6c757d;">
-                                <div style="font-size: 2rem; margin-bottom: 10px;">📱</div>
-                                <div style="font-weight: 600; margin-bottom: 5px;">Screenshot ${i}</div>
-                                <div style="font-size: 0.9rem;">Not Available</div>
-                                <div style="font-size: 0.8rem; margin-top: 10px; color: #adb5bd;">Showing English fallback</div>
-                            </div>`;
-                            img.parentNode.appendChild(placeholder);
-                        });
                     });
                 }
             });

@@ -897,22 +897,26 @@ body {
 }
 
 .faq-icon {
-    width: 30px;
-    height: 30px;
-    background: linear-gradient(135deg, var(--app-green), var(--app-teal));
+    width: 32px;
+    height: 32px;
+    background-color: var(--app-green);
+    background-image: linear-gradient(135deg, var(--app-green), var(--app-teal)), url('images/magic-grass-tranparent-small.png');
+    background-size: cover, 20px 20px;
+    background-position: center, center;
+    background-repeat: no-repeat, no-repeat;
+    background-blend-mode: normal, normal;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
-    font-size: 1.2rem;
-    font-weight: 300;
-    transition: transform 0.3s ease;
-    line-height: 1;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(52, 199, 89, 0.3);
 }
 
 .faq-item.active .faq-icon {
-    transform: rotate(45deg);
+    transform: rotate(180deg) scale(1.1);
+    box-shadow: 0 4px 12px rgba(52, 199, 89, 0.4);
+    background-image: linear-gradient(135deg, var(--emerald), var(--app-green)), url('images/magic-grass-tranparent-small.png');
 }
 
 .faq-answer {
