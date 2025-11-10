@@ -21,6 +21,18 @@ class LanguageManager {
         const langMap = {
             'zh': 'zh-CN',
             'ja': 'ja',
+            'ko': 'ko',
+            'fr': 'fr',
+            'de': 'de',
+            'es': 'es',
+            'it': 'it',
+            'ru': 'ru',
+            'ar': 'ar',
+            'hi': 'hi',
+            'th': 'th',
+            'vi': 'vi',
+            'id': 'id',
+            'pt': 'pt',
             'en': 'en'
         };
 
@@ -201,7 +213,19 @@ class ScreenshotCarousel {
             en: 6,
             'zh-CN': 3,
             'zh-TW': 3,
-            ja: 3
+            ja: 3,
+            ko: 3,
+            fr: 3,
+            de: 3,
+            es: 3,
+            it: 3,
+            ru: 3,
+            ar: 3,
+            hi: 3,
+            th: 3,
+            vi: 3,
+            id: 3,
+            pt: 3
         };
         this.currentLanguage = this.detectLanguage();
         this.isAutoPlaying = false;
@@ -361,7 +385,19 @@ class ScreenshotCarousel {
             'en': 'en',
             'zh-CN': 'zh-hans',
             'zh-TW': 'zh-hant',
-            'ja': 'ja'
+            'ja': 'ja',
+            'ko': 'ko',
+            'fr': 'fr',
+            'de': 'de',
+            'es': 'es',
+            'it': 'it',
+            'ru': 'ru',
+            'ar': 'ar',
+            'hi': 'hi',
+            'th': 'th',
+            'vi': 'vi',
+            'id': 'id',
+            'pt': 'pt'
         };
         return pathMap[language] || 'en';
     }
