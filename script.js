@@ -305,8 +305,14 @@ class ScreenshotCarousel {
 
         const count = this.screenshots[this.currentLanguage] || 3;
         const langPath = this.getLanguagePath(this.currentLanguage);
+        const fallbackLangPath = 'en'; // Always fallback to English
 
         console.log(`Loading ${count} screenshots for language: ${this.currentLanguage} (${langPath})`);
+
+        // Check if we're likely to use English fallbacks
+        if (langPath !== 'en' && !this.screenshotDirectoryExists(langPath)) {
+            console.log(`Screenshot directory for ${langPath} not found, will use English fallbacks`);
+        }
 
         // Clear existing screenshots
         track.innerHTML = '';
@@ -330,31 +336,50 @@ class ScreenshotCarousel {
             img.loading = i <= 2 ? 'eager' : 'lazy';
             img.style.display = 'none'; // Hide until loaded
 
-            // Add comprehensive error handling
+            let fallbackAttempted = false;
+
+            // Add comprehensive error handling with English fallback
             img.addEventListener('error', () => {
-                console.warn(`Failed to load HQ screenshot: ${img.src}`);
-                loadingIndicator.style.display = 'none';
+                if (!fallbackAttempted) {
+                    fallbackAttempted = true;
+                    console.warn(`Failed to load HQ screenshot: ${img.src}`);
 
-                // Try fallback to non-hq version
-                const fallbackSrc = `images/screenshots/${langPath}/${langPath}-${i}.png`;
-                console.log(`Trying fallback: ${fallbackSrc}`);
-                img.src = fallbackSrc;
+                    // Try fallback to non-hq version first
+                    const nonHqSrc = `images/screenshots/${langPath}/${langPath}-${i}.png`;
+                    console.log(`Trying non-HQ fallback: ${nonHqSrc}`);
+                    img.src = nonHqSrc;
+                } else {
+                    // If non-HQ fails, try English HQ version
+                    console.warn(`Failed to load non-HQ screenshot, trying English fallback`);
+                    const englishHqSrc = `images/screenshots/en/en-${i}-hq.png`;
+                    console.log(`Trying English HQ fallback: ${englishHqSrc}`);
+                    img.src = englishHqSrc;
+                    img.alt = `Totora App Screenshot ${i} - English`;
 
-                img.addEventListener('error', () => {
-                    console.error(`Failed to load fallback screenshot: ${fallbackSrc}`);
-                    loadingIndicator.style.display = 'none';
-                    // Show placeholder
-                    img.style.display = 'none';
-                    const placeholder = document.createElement('div');
-                    placeholder.className = 'screenshot-placeholder';
-                    placeholder.innerHTML = `<div style="padding: 30px; background: #f8f9fa; border: 2px dashed #dee2e6; border-radius: 12px; text-align: center; color: #6c757d;">
-                        <div style="font-size: 2rem; margin-bottom: 10px;">📱</div>
-                        <div style="font-weight: 600; margin-bottom: 5px;">Screenshot ${i}</div>
-                        <div style="font-size: 0.9rem;">Not Available</div>
-                        <div style="font-size: 0.8rem; margin-top: 10px; color: #adb5bd;">Expected: ${imageSrc}</div>
-                    </div>`;
-                    img.parentNode.appendChild(placeholder);
-                });
+                    // Add final error handler for English fallback
+                    img.addEventListener('error', () => {
+                        console.error(`Failed to load English HQ screenshot, trying English non-HQ`);
+                        const englishSrc = `images/screenshots/en/en-${i}.png`;
+                        console.log(`Trying English non-HQ fallback: ${englishSrc}`);
+                        img.src = englishSrc;
+
+                        // Final fallback - show placeholder if English also fails
+                        img.addEventListener('error', () => {
+                            console.error(`All screenshot attempts failed for screenshot ${i}`);
+                            loadingIndicator.style.display = 'none';
+                            img.style.display = 'none';
+                            const placeholder = document.createElement('div');
+                            placeholder.className = 'screenshot-placeholder';
+                            placeholder.innerHTML = `<div style="padding: 30px; background: #f8f9fa; border: 2px dashed #dee2e6; border-radius: 12px; text-align: center; color: #6c757d;">
+                                <div style="font-size: 2rem; margin-bottom: 10px;">📱</div>
+                                <div style="font-weight: 600; margin-bottom: 5px;">Screenshot ${i}</div>
+                                <div style="font-size: 0.9rem;">Not Available</div>
+                                <div style="font-size: 0.8rem; margin-top: 10px; color: #adb5bd;">Showing English fallback</div>
+                            </div>`;
+                            img.parentNode.appendChild(placeholder);
+                        });
+                    });
+                }
             });
 
             // Add load success handling
@@ -362,7 +387,23 @@ class ScreenshotCarousel {
                 loadingIndicator.style.display = 'none';
                 img.style.display = 'block';
                 img.classList.add('img-loaded');
-                console.log(`Successfully loaded screenshot: ${img.src}`);
+
+                // Log which version was loaded
+                if (img.src.includes('/en/')) {
+                    console.log(`Successfully loaded English fallback screenshot: ${img.src}`);
+
+                    // If we loaded an English screenshot and the current language has fewer screenshots than English,
+                    // we might need to add more English screenshots to match English's count
+                    const englishCount = this.screenshots['en'];
+                    const currentLanguageCount = this.screenshots[this.currentLanguage];
+
+                    if (i === currentLanguageCount && currentLanguageCount < englishCount) {
+                        // Load remaining English screenshots
+                        this.loadAdditionalEnglishScreenshots(i + 1, englishCount, track);
+                    }
+                } else {
+                    console.log(`Successfully loaded screenshot: ${img.src}`);
+                }
 
                 // Force carousel update after first image loads
                 if (i === 1) {
@@ -378,6 +419,70 @@ class ScreenshotCarousel {
 
         this.updateCarousel();
         this.updateIndicators();
+    }
+
+    loadAdditionalEnglishScreenshots(startIndex, endIndex, track) {
+        console.log(`Loading additional English screenshots from ${startIndex} to ${endIndex}`);
+
+        for (let i = startIndex; i <= endIndex; i++) {
+            const slide = document.createElement('div');
+            slide.className = 'screenshot-item';
+
+            // Add loading indicator
+            const loadingIndicator = document.createElement('div');
+            loadingIndicator.className = 'screenshot-loading';
+            loadingIndicator.innerHTML = `<div style="padding: 20px; text-align: center; color: #666; background: #f8f9fa; border-radius: 12px;">Loading English screenshot ${i}...</div>`;
+            slide.appendChild(loadingIndicator);
+
+            const img = document.createElement('img');
+            const englishHqSrc = `images/screenshots/en/en-${i}-hq.png`;
+            img.src = englishHqSrc;
+            img.alt = `Totora App Screenshot ${i} - English`;
+            img.className = 'screenshot-img';
+            img.loading = 'lazy';
+            img.style.display = 'none'; // Hide until loaded
+
+            // Add error handling for English screenshots
+            img.addEventListener('error', () => {
+                console.warn(`Failed to load English HQ screenshot: ${englishHqSrc}`);
+                const englishSrc = `images/screenshots/en/en-${i}.png`;
+                console.log(`Trying English non-HQ fallback: ${englishSrc}`);
+                img.src = englishSrc;
+
+                img.addEventListener('error', () => {
+                    console.error(`Failed to load English screenshot ${i}`);
+                    loadingIndicator.style.display = 'none';
+                    img.style.display = 'none';
+                    const placeholder = document.createElement('div');
+                    placeholder.className = 'screenshot-placeholder';
+                    placeholder.innerHTML = `<div style="padding: 30px; background: #f8f9fa; border: 2px dashed #dee2e6; border-radius: 12px; text-align: center; color: #6c757d;">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">📱</div>
+                        <div style="font-weight: 600; margin-bottom: 5px;">English Screenshot ${i}</div>
+                        <div style="font-size: 0.9rem;">Not Available</div>
+                    </div>`;
+                    img.parentNode.appendChild(placeholder);
+                });
+            });
+
+            // Add load success handling
+            img.addEventListener('load', () => {
+                loadingIndicator.style.display = 'none';
+                img.style.display = 'block';
+                img.classList.add('img-loaded');
+                console.log(`Successfully loaded additional English screenshot: ${img.src}`);
+
+                // Update carousel when all images are loaded
+                if (i === endIndex) {
+                    setTimeout(() => {
+                        this.updateCarousel();
+                        this.updateIndicators();
+                    }, 100);
+                }
+            });
+
+            slide.appendChild(img);
+            track.appendChild(slide);
+        }
     }
 
     getLanguagePath(language) {
@@ -415,8 +520,31 @@ class ScreenshotCarousel {
         }
     }
 
+    getCurrentScreenshotCount() {
+        const track = document.getElementById('screenshot-track');
+        if (!track) return this.screenshots[this.currentLanguage] || 3;
+
+        const screenshotItems = track.querySelectorAll('.screenshot-item');
+        return screenshotItems.length;
+    }
+
+    isUsingEnglishFallback() {
+        const track = document.getElementById('screenshot-track');
+        if (!track) return false;
+
+        const firstImg = track.querySelector('.screenshot-item img');
+        return firstImg && firstImg.src && firstImg.src.includes('/en/');
+    }
+
+    screenshotDirectoryExists(langPath) {
+        // Check if the directory exists by trying to load the first screenshot
+        // This is a simple client-side check since we can't access the filesystem directly
+        const knownDirectories = ['en', 'zh-hans', 'zh-hant', 'ja'];
+        return knownDirectories.includes(langPath);
+    }
+
     prevSlide() {
-        const count = this.screenshots[this.currentLanguage] || 3;
+        const count = this.getCurrentScreenshotCount();
         this.currentIndex = (this.currentIndex - 1 + count) % count;
         this.updateCarousel();
         this.updateIndicators();
@@ -424,7 +552,7 @@ class ScreenshotCarousel {
     }
 
     nextSlide() {
-        const count = this.screenshots[this.currentLanguage] || 3;
+        const count = this.getCurrentScreenshotCount();
         this.currentIndex = (this.currentIndex + 1) % count;
         this.updateCarousel();
         this.updateIndicators();
@@ -466,7 +594,7 @@ class ScreenshotCarousel {
 
         if (!track || !indicatorsContainer) return;
 
-        const count = this.screenshots[this.currentLanguage] || 3;
+        const count = this.getCurrentScreenshotCount();
 
         // Clear existing indicators
         indicatorsContainer.innerHTML = '';
