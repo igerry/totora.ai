@@ -749,7 +749,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             appStoreButton.addEventListener('click', (e) => {
                 e.preventDefault();
                 // Redirect to App Store (placeholder)
-                window.open('https://apps.apple.com/app/totora', '_blank');
+                window.open('https://apps.apple.com/app/totora-family-story-creator/id6753327480', '_blank');
             });
         }
 
