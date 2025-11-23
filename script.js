@@ -214,10 +214,57 @@ class ScreenshotCarousel {
         this.currentLanguage = this.detectLanguage();
         this.isAutoPlaying = false;
         this.autoPlayInterval = null;
+        this.totalImagesToLoad = 0;
+        this.imagesLoaded = 0;
+        this.allImagesLoaded = false;
         this.init();
     }
 
     // Dynamically count JPEG files in screenshot directories
+    // Track image loading progress
+    trackImageLoad() {
+        this.imagesLoaded++;
+        console.log(`Image loaded: ${this.imagesLoaded}/${this.totalImagesToLoad}`);
+
+        if (this.imagesLoaded === this.totalImagesToLoad && this.totalImagesToLoad > 0) {
+            this.allImagesLoaded = true;
+            console.log('All images loaded! Enabling autoscroll.');
+            this.enableAutoScroll();
+        }
+    }
+
+    resetImageTracking() {
+        this.imagesLoaded = 0;
+        this.totalImagesToLoad = 0;
+        this.allImagesLoaded = false;
+        this.disableAutoScroll();
+    }
+
+    enableAutoScroll() {
+        // Only start autoscroll if all images are loaded
+        if (this.allImagesLoaded) {
+            // Remove any existing hover listeners to prevent duplicates
+            const carousel = document.querySelector('.hero-screenshots-carousel');
+            if (carousel) {
+                const newCarousel = carousel.cloneNode(true);
+                carousel.parentNode.replaceChild(newCarousel, carousel);
+            }
+
+            setTimeout(() => this.startAutoPlay(), 2000);
+
+            // Pause on hover - add to fresh carousel element
+            const freshCarousel = document.querySelector('.hero-screenshots-carousel');
+            if (freshCarousel) {
+                freshCarousel.addEventListener('mouseenter', () => this.stopAutoPlay());
+                freshCarousel.addEventListener('mouseleave', () => this.startAutoPlay());
+            }
+        }
+    }
+
+    disableAutoScroll() {
+        this.stopAutoPlay();
+    }
+
     async loadScreenshotCounts() {
         const languageMap = this.getLanguagePathMap();
         this.screenshots = {};
@@ -397,6 +444,10 @@ class ScreenshotCarousel {
 
         console.log(`Loading ${count} screenshots for language: ${this.currentLanguage} (${useFallback ? 'using English fallback' : langPath})`);
 
+        // Reset image tracking and set expected count
+        this.resetImageTracking();
+        this.totalImagesToLoad = count;
+
         // Clear existing screenshots
         track.innerHTML = '';
 
@@ -404,27 +455,26 @@ class ScreenshotCarousel {
         for (let i = 1; i <= count; i++) {
             const slide = document.createElement('div');
             slide.className = 'screenshot-item';
+            slide.style.position = 'relative'; // Needed for absolute positioning of spinner overlay
 
-            // Add loading indicator
-            const loadingIndicator = document.createElement('div');
-            loadingIndicator.className = 'screenshot-loading';
-            loadingIndicator.innerHTML = `<div style="padding: 20px; text-align: center; color: #666; background: transparent; border-radius: 12px;">Loading screenshot ${i}...</div>`;
-            slide.appendChild(loadingIndicator);
-
+            // Create the image first
             const img = document.createElement('img');
             img.alt = `Totora App Screenshot ${i} - ${this.currentLanguage}`;
             img.className = 'screenshot-img';
 
-            // Only load the first image immediately, others use lazy loading
-            if (i === 1) {
-                img.loading = 'eager';
-                img.src = `images/screenshots/${langPath}/${i}.jpeg`;
-            } else {
-                img.loading = 'lazy';
-                img.setAttribute('data-src', `images/screenshots/${langPath}/${i}.jpeg`);
-            }
+            // Use lazy loading for all screenshots, including the first one
+            img.loading = 'lazy';
+            img.setAttribute('data-src', `images/screenshots/${langPath}/${i}.jpeg`);
 
             img.style.display = 'none'; // Hide until loaded
+
+            // Create spinner overlay
+            const spinnerOverlay = document.createElement('div');
+            spinnerOverlay.className = 'screenshot-spinner-overlay';
+            spinnerOverlay.innerHTML = `
+                <div class="screenshot-spinner"></div>
+                <div class="screenshot-spinner-text">Loading screenshot ${i}...</div>
+            `;
 
             let fallbackAttempted = false;
 
@@ -447,15 +497,16 @@ class ScreenshotCarousel {
                 } else {
                     // If first fallback fails, try different error handling
                     console.warn(`Failed to load English fallback screenshot`);
-                    // Show error message
-                    loadingIndicator.innerHTML = `<div style="padding: 20px; text-align: center; color: #999; background: transparent; border-radius: 12px;">Screenshot ${i} not available</div>`;
-                    loadingIndicator.style.display = 'block';
+                    // Show error message in spinner overlay
+                    spinnerOverlay.innerHTML = `<div style="padding: 20px; text-align: center; color: #999; background: transparent; border-radius: 12px;">Screenshot ${i} not available</div>`;
+                    spinnerOverlay.style.display = 'flex';
                 }
             });
 
             // Add load success handling
             img.addEventListener('load', () => {
-                loadingIndicator.style.display = 'none';
+                // Hide spinner overlay and show image
+                spinnerOverlay.style.display = 'none';
                 img.style.display = 'block';
                 img.classList.add('img-loaded');
 
@@ -469,12 +520,20 @@ class ScreenshotCarousel {
                     const currentLanguageCount = this.screenshots[this.currentLanguage];
 
                     if (i === currentLanguageCount && currentLanguageCount < englishCount) {
+                        // Update total images count to include additional English screenshots
+                        const additionalImages = englishCount - currentLanguageCount;
+                        this.totalImagesToLoad += additionalImages;
+                        console.log(`Adding ${additionalImages} additional English screenshots. Total to load: ${this.totalImagesToLoad}`);
+
                         // Load remaining English screenshots
                         this.loadAdditionalEnglishScreenshots(i + 1, englishCount, track);
                     }
                 } else {
                     console.log(`Successfully loaded screenshot: ${img.src}`);
                 }
+
+                // Track image loading progress
+                this.trackImageLoad();
 
                 // Force carousel update after first image loads
                 if (i === 1) {
@@ -484,6 +543,13 @@ class ScreenshotCarousel {
                 }
             });
 
+            // Add error handling to hide spinner on error too
+            img.addEventListener('error', () => {
+                spinnerOverlay.style.display = 'none';
+            });
+
+            // Append elements in correct order
+            slide.appendChild(spinnerOverlay);
             slide.appendChild(img);
             track.appendChild(slide);
         }
@@ -501,12 +567,7 @@ class ScreenshotCarousel {
         for (let i = startIndex; i <= endIndex; i++) {
             const slide = document.createElement('div');
             slide.className = 'screenshot-item';
-
-            // Add loading indicator
-            const loadingIndicator = document.createElement('div');
-            loadingIndicator.className = 'screenshot-loading';
-            loadingIndicator.innerHTML = `<div style="padding: 20px; text-align: center; color: #666; background: transparent; border-radius: 12px;">Loading English screenshot ${i}...</div>`;
-            slide.appendChild(loadingIndicator);
+            slide.style.position = 'relative'; // Needed for absolute positioning of spinner overlay
 
             const img = document.createElement('img');
             img.alt = `Totora App Screenshot ${i} - English`;
@@ -514,6 +575,14 @@ class ScreenshotCarousel {
             img.loading = 'lazy';
             img.setAttribute('data-src', `images/screenshots/en/${i}.jpeg`);
             img.style.display = 'none'; // Hide until loaded
+
+            // Create spinner overlay
+            const spinnerOverlay = document.createElement('div');
+            spinnerOverlay.className = 'screenshot-spinner-overlay';
+            spinnerOverlay.innerHTML = `
+                <div class="screenshot-spinner"></div>
+                <div class="screenshot-spinner-text">Loading English screenshot ${i}...</div>
+            `;
 
             // Add error handling for English screenshots
             img.addEventListener('error', () => {
@@ -525,22 +594,26 @@ class ScreenshotCarousel {
                     img.removeAttribute('data-src');
                     img.src = englishSrc;
                 } else {
-                    // Show error message if direct loading also fails
-                    loadingIndicator.innerHTML = `<div style="padding: 30px; background: transparent; border: 2px dashed #dee2e6; border-radius: 12px; text-align: center; color: #6c757d;">
+                    // Show error message in spinner overlay if direct loading also fails
+                    spinnerOverlay.innerHTML = `<div style="padding: 30px; background: transparent; border: 2px dashed #dee2e6; border-radius: 12px; text-align: center; color: #6c757d;">
                         <div style="font-size: 2rem; margin-bottom: 10px;">📱</div>
                         <div style="font-weight: 600; margin-bottom: 5px;">Screenshot ${i}</div>
                         <div style="font-size: 0.9rem;">Not Available</div>
                     </div>`;
-                    loadingIndicator.style.display = 'block';
+                    spinnerOverlay.style.display = 'flex';
                 }
             });
 
             // Add load success handling
             img.addEventListener('load', () => {
-                loadingIndicator.style.display = 'none';
+                // Hide spinner overlay and show image
+                spinnerOverlay.style.display = 'none';
                 img.style.display = 'block';
                 img.classList.add('img-loaded');
                 console.log(`Successfully loaded additional English screenshot: ${img.src}`);
+
+                // Track image loading progress
+                this.trackImageLoad();
 
                 // Update carousel when all images are loaded
                 if (i === endIndex) {
@@ -551,6 +624,13 @@ class ScreenshotCarousel {
                 }
             });
 
+            // Add error handling to hide spinner on error too
+            img.addEventListener('error', () => {
+                spinnerOverlay.style.display = 'none';
+            });
+
+            // Append elements in correct order
+            slide.appendChild(spinnerOverlay);
             slide.appendChild(img);
             track.appendChild(slide);
         }
@@ -605,7 +685,11 @@ class ScreenshotCarousel {
         this.currentIndex = (this.currentIndex - 1 + count) % count;
         this.updateCarousel();
         this.updateIndicators();
-        this.resetAutoPlay();
+
+        // Only reset autoplay if all images are loaded
+        if (this.allImagesLoaded) {
+            this.resetAutoPlay();
+        }
     }
 
     nextSlide() {
@@ -613,7 +697,11 @@ class ScreenshotCarousel {
         this.currentIndex = (this.currentIndex + 1) % count;
         this.updateCarousel();
         this.updateIndicators();
-        this.resetAutoPlay();
+
+        // Only reset autoplay if all images are loaded
+        if (this.allImagesLoaded) {
+            this.resetAutoPlay();
+        }
     }
 
     updateCarousel() {
@@ -667,21 +755,22 @@ class ScreenshotCarousel {
     }
 
     setupAutoPlay() {
-        // Start auto-play after a short delay to ensure screenshots are loaded
-        setTimeout(() => this.startAutoPlay(), 2000);
-
-        // Pause on hover
-        const carousel = document.querySelector('.hero-screenshots-carousel');
-        if (carousel) {
-            carousel.addEventListener('mouseenter', () => this.stopAutoPlay());
-            carousel.addEventListener('mouseleave', () => this.startAutoPlay());
-        }
+        // Don't start autoplay immediately - wait for all images to load
+        // AutoScroll will be enabled when all images are loaded via enableAutoScroll()
+        console.log('AutoPlay setup complete - waiting for all images to load before starting...');
     }
 
     startAutoPlay() {
+        // Only start autoplay if all images are loaded
+        if (!this.allImagesLoaded) {
+            console.log('Cannot start autoplay - images not fully loaded yet');
+            return;
+        }
+
         if (this.isAutoPlaying) return;
         this.isAutoPlaying = true;
         this.autoPlayInterval = setInterval(() => this.nextSlide(), 3000);
+        console.log('Autoplay started - all images loaded');
     }
 
     stopAutoPlay() {
