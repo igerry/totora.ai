@@ -7,7 +7,23 @@ class LanguageManager {
     }
 
     detectLanguage() {
-        // Check for stored language preference first
+        // Check for URL language parameter first (highest priority)
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlLang = urlParams.get('lang');
+        if (urlLang) {
+            // Validate and normalize URL language parameter
+            const normalizedLang = this.normalizeLanguageCode(urlLang);
+            if (normalizedLang) {
+                console.log(`Language from URL parameter: ${urlLang} -> ${normalizedLang}`);
+                // Store URL language preference for future visits
+                localStorage.setItem('totora-language', normalizedLang);
+                return normalizedLang;
+            } else {
+                console.warn(`Invalid language parameter in URL: ${urlLang}`);
+            }
+        }
+
+        // Check for stored language preference
         const stored = localStorage.getItem('totora-language');
         if (stored) {
             return stored;
@@ -39,7 +55,55 @@ class LanguageManager {
         return langMap[langCode] || 'en';
     }
 
+    normalizeLanguageCode(langCode) {
+        // Supported languages with their normalized forms
+        const supportedLanguages = {
+            'en': 'en',
+            'english': 'en',
+            'zh-cn': 'zh-CN',
+            'zh-hans': 'zh-CN',
+            'chinese-simplified': 'zh-CN',
+            'zh-hant': 'zh-TW',
+            'zh-tw': 'zh-TW',
+            'chinese-traditional': 'zh-TW',
+            'ja': 'ja',
+            'japanese': 'ja',
+            'ko': 'ko',
+            'korean': 'ko',
+            'fr': 'fr',
+            'french': 'fr',
+            'de': 'de',
+            'german': 'de',
+            'es': 'es',
+            'spanish': 'es',
+            'it': 'it',
+            'italian': 'it',
+            'ru': 'ru',
+            'russian': 'ru',
+            'ar': 'ar',
+            'arabic': 'ar',
+            'hi': 'hi',
+            'hindi': 'hi',
+            'th': 'th',
+            'thai': 'th',
+            'vi': 'vi',
+            'vietnamese': 'vi',
+            'id': 'id',
+            'indonesian': 'id',
+            'pt': 'pt',
+            'portuguese': 'pt'
+        };
+
+        // Convert to lowercase for case-insensitive matching
+        const normalizedInput = langCode.toLowerCase();
+        return supportedLanguages[normalizedInput] || null;
+    }
+
     async init() {
+        // Log language detection info for debugging
+        console.log(`Language initialization - Current URL: ${window.location.href}`);
+        console.log(`Language initialization - Detected language: ${this.currentLang}`);
+
         // Load initial language translations
         await this.loadLanguage(this.currentLang);
 
@@ -111,11 +175,44 @@ class LanguageManager {
 
         // Save preference to localStorage
         localStorage.setItem('totora-language', lang);
+
+        // Update URL parameter to reflect current language
+        this.updateURLLanguageParameter(lang);
+    }
+
+    updateURLLanguageParameter(lang) {
+        const url = new URL(window.location);
+        const params = new URLSearchParams(url.search);
+
+        // Update or add lang parameter
+        params.set('lang', lang);
+        url.search = params.toString();
+
+        // Update browser history without creating a new history entry
+        window.history.replaceState({}, '', url);
+
+        console.log(`URL updated with language parameter: ${lang}`);
     }
 
     getDirection(lang) {
         // All supported languages are left-to-right
         return 'ltr';
+    }
+
+    // Utility method to generate language-specific URLs for sharing
+    getLanguageURL(lang) {
+        const url = new URL(window.location);
+        const params = new URLSearchParams(url.search);
+        params.set('lang', lang);
+        url.search = params.toString();
+        return url.toString();
+    }
+
+    // Utility method to get current language from URL (useful for debugging)
+    getCurrentURLLanguage() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlLang = urlParams.get('lang');
+        return urlLang ? this.normalizeLanguageCode(urlLang) : null;
     }
 
     setupNavigation() {
