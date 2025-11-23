@@ -359,14 +359,14 @@ class ScreenshotCarousel {
                 carousel.parentNode.replaceChild(newCarousel, carousel);
             }
 
-            setTimeout(() => this.startAutoPlay(), 2000);
+            // setTimeout(() => this.startAutoPlay(), 2000); // Auto-play disabled
 
-            // Pause on hover - add to fresh carousel element
-            const freshCarousel = document.querySelector('.hero-screenshots-carousel');
-            if (freshCarousel) {
-                freshCarousel.addEventListener('mouseenter', () => this.stopAutoPlay());
-                freshCarousel.addEventListener('mouseleave', () => this.startAutoPlay());
-            }
+            // Auto-play hover events disabled
+            // const freshCarousel = document.querySelector('.hero-screenshots-carousel');
+            // if (freshCarousel) {
+            //     freshCarousel.addEventListener('mouseenter', () => this.stopAutoPlay());
+            //     freshCarousel.addEventListener('mouseleave', () => this.startAutoPlay());
+            // }
         }
     }
 
@@ -518,9 +518,13 @@ class ScreenshotCarousel {
     }
 
     init() {
-        this.setupNavigation();
-        this.setupIndicators();
-        this.setupAutoPlay();
+        // Delay navigation setup to ensure DOM is ready
+        setTimeout(() => {
+            this.setupNavigation();
+            this.setupIndicators();
+        }, 100);
+
+        // this.setupAutoPlay(); // Auto-play disabled
         this.setupKeyboardNavigation();
         this.setupTouchGestures();
         this.loadScreenshotCounts(); // This will call loadScreenshots() when done
@@ -549,8 +553,7 @@ class ScreenshotCarousel {
             this.loadScreenshots();
         };
 
-        // Show debug info on page
-        this.showDebugInfo();
+        // Debug info removed
     }
 
     // Method to update language from LanguageManager
@@ -840,12 +843,21 @@ class ScreenshotCarousel {
         const prevBtn = document.querySelector('.prev-btn');
         const nextBtn = document.querySelector('.next-btn');
 
+        console.log('Setup Navigation - prevBtn found:', !!prevBtn);
+        console.log('Setup Navigation - nextBtn found:', !!nextBtn);
+
         if (prevBtn) {
-            prevBtn.addEventListener('click', () => this.prevSlide());
+            prevBtn.addEventListener('click', () => {
+                console.log('Prev button clicked');
+                this.prevSlide();
+            });
         }
 
         if (nextBtn) {
-            nextBtn.addEventListener('click', () => this.nextSlide());
+            nextBtn.addEventListener('click', () => {
+                console.log('Next button clicked');
+                this.nextSlide();
+            });
         }
     }
 
@@ -874,34 +886,42 @@ class ScreenshotCarousel {
 
     prevSlide() {
         const count = this.getCurrentScreenshotCount();
+        console.log(`prevSlide() - Current index: ${this.currentIndex}, Count: ${count}`);
         this.currentIndex = (this.currentIndex - 1 + count) % count;
+        console.log(`prevSlide() - New index: ${this.currentIndex}`);
         this.updateCarousel();
         this.updateIndicators();
 
         // Only reset autoplay if all images are loaded
         if (this.allImagesLoaded) {
-            this.resetAutoPlay();
+            // this.resetAutoPlay(); // Auto-play disabled
         }
     }
 
     nextSlide() {
         const count = this.getCurrentScreenshotCount();
+        console.log(`nextSlide() - Current index: ${this.currentIndex}, Count: ${count}`);
         this.currentIndex = (this.currentIndex + 1) % count;
+        console.log(`nextSlide() - New index: ${this.currentIndex}`);
         this.updateCarousel();
         this.updateIndicators();
 
         // Only reset autoplay if all images are loaded
         if (this.allImagesLoaded) {
-            this.resetAutoPlay();
+            // this.resetAutoPlay(); // Auto-play disabled
         }
     }
 
     updateCarousel() {
         const track = document.getElementById('hero-screenshot-track');
-        if (!track) return;
+        if (!track) {
+            console.log('updateCarousel() - Track not found');
+            return;
+        }
 
         const slideWidth = 100; // percentage
         const offset = -this.currentIndex * slideWidth;
+        console.log(`updateCarousel() - Index: ${this.currentIndex}, Offset: ${offset}%`);
         track.style.transform = `translateX(${offset}%)`;
     }
 
@@ -918,7 +938,7 @@ class ScreenshotCarousel {
                         this.currentIndex = index;
                         this.updateCarousel();
                         this.updateIndicators();
-                        this.resetAutoPlay();
+                        // this.resetAutoPlay(); // Auto-play disabled
                     }
                 }
             });
@@ -953,6 +973,10 @@ class ScreenshotCarousel {
     }
 
     startAutoPlay() {
+        // Auto-play disabled
+        console.log('Auto-play is disabled');
+        return;
+
         // Only start autoplay if all images are loaded
         if (!this.allImagesLoaded) {
             console.log('Cannot start autoplay - images not fully loaded yet');
