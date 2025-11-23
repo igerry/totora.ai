@@ -555,7 +555,7 @@ body {
     aspect-ratio: 9/19.5; /* Typical phone screen ratio */
     border-radius: 16px;
     box-shadow: var(--shadow-lg);
-    background: transparent;
+    background: white;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1429,7 +1429,7 @@ html {
 
 .img-error {
     opacity: 0.3;
-    filter: grayscale(100%);
+    /* filter: grayscale(100%); */
     display: flex;
     align-items: center;
     justify-content: center;
