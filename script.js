@@ -412,11 +412,18 @@ class ScreenshotCarousel {
             slide.appendChild(loadingIndicator);
 
             const img = document.createElement('img');
-            const imageSrc = `images/screenshots/${langPath}/${i}.jpeg`;
-            img.src = imageSrc;
             img.alt = `Totora App Screenshot ${i} - ${this.currentLanguage}`;
             img.className = 'screenshot-img';
-            img.loading = i <= 2 ? 'eager' : 'lazy';
+
+            // Only load the first image immediately, others use lazy loading
+            if (i === 1) {
+                img.loading = 'eager';
+                img.src = `images/screenshots/${langPath}/${i}.jpeg`;
+            } else {
+                img.loading = 'lazy';
+                img.setAttribute('data-src', `images/screenshots/${langPath}/${i}.jpeg`);
+            }
+
             img.style.display = 'none'; // Hide until loaded
 
             let fallbackAttempted = false;
@@ -425,11 +432,17 @@ class ScreenshotCarousel {
             img.addEventListener('error', () => {
                 if (!fallbackAttempted) {
                     fallbackAttempted = true;
-                    console.warn(`Failed to load screenshot: ${img.src}`);
+                    const currentSrc = img.src || img.getAttribute('data-src');
+                    console.warn(`Failed to load screenshot: ${currentSrc}`);
 
                     // Try fallback to English version
                     const englishSrc = `images/screenshots/en/${i}.jpeg`;
                     console.log(`Trying English fallback: ${englishSrc}`);
+
+                    // For lazy loaded images, set the src directly
+                    if (img.hasAttribute('data-src')) {
+                        img.removeAttribute('data-src');
+                    }
                     img.src = englishSrc;
                 } else {
                     // If first fallback fails, try different error handling
@@ -475,6 +488,9 @@ class ScreenshotCarousel {
             track.appendChild(slide);
         }
 
+        // Setup lazy loading for the newly created images
+        this.setupLazyLoading();
+
         this.updateCarousel();
         this.updateIndicators();
     }
@@ -493,22 +509,30 @@ class ScreenshotCarousel {
             slide.appendChild(loadingIndicator);
 
             const img = document.createElement('img');
-            const englishSrc = `images/screenshots/en/${i}.jpeg`;
-            img.src = englishSrc;
             img.alt = `Totora App Screenshot ${i} - English`;
             img.className = 'screenshot-img';
             img.loading = 'lazy';
+            img.setAttribute('data-src', `images/screenshots/en/${i}.jpeg`);
             img.style.display = 'none'; // Hide until loaded
 
             // Add error handling for English screenshots
             img.addEventListener('error', () => {
+                const englishSrc = `images/screenshots/en/${i}.jpeg`;
                 console.warn(`Failed to load English screenshot: ${englishSrc}`);
-                loadingIndicator.innerHTML = `<div style="padding: 30px; background: transparent; border: 2px dashed #dee2e6; border-radius: 12px; text-align: center; color: #6c757d;">
-                    <div style="font-size: 2rem; margin-bottom: 10px;">📱</div>
-                    <div style="font-weight: 600; margin-bottom: 5px;">Screenshot ${i}</div>
-                    <div style="font-size: 0.9rem;">Not Available</div>
-                </div>`;
-                loadingIndicator.style.display = 'block';
+
+                // If lazy loading failed, try direct loading
+                if (img.hasAttribute('data-src')) {
+                    img.removeAttribute('data-src');
+                    img.src = englishSrc;
+                } else {
+                    // Show error message if direct loading also fails
+                    loadingIndicator.innerHTML = `<div style="padding: 30px; background: transparent; border: 2px dashed #dee2e6; border-radius: 12px; text-align: center; color: #6c757d;">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">📱</div>
+                        <div style="font-weight: 600; margin-bottom: 5px;">Screenshot ${i}</div>
+                        <div style="font-size: 0.9rem;">Not Available</div>
+                    </div>`;
+                    loadingIndicator.style.display = 'block';
+                }
             });
 
             // Add load success handling
@@ -530,6 +554,9 @@ class ScreenshotCarousel {
             slide.appendChild(img);
             track.appendChild(slide);
         }
+
+        // Setup lazy loading for the additional English images
+        this.setupLazyLoading();
     }
 
     getLanguagePath(language) {
@@ -677,7 +704,7 @@ class ScreenshotCarousel {
     }
 
     setupTouchGestures() {
-        const carousel = document.querySelector('.screenshot-carousel');
+        const carousel = document.querySelector('.hero-screenshots-carousel');
         if (!carousel) return;
 
         let startX = 0;
@@ -715,6 +742,45 @@ class ScreenshotCarousel {
 
             isDragging = false;
         });
+    }
+
+    // Setup custom lazy loading for screenshot images
+    setupLazyLoading() {
+        const lazyImages = document.querySelectorAll('img[data-src]');
+
+        if ('IntersectionObserver' in window) {
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        const src = img.getAttribute('data-src');
+
+                        if (src) {
+                            img.src = src;
+                            img.removeAttribute('data-src');
+                            img.classList.add('lazy-loaded');
+                        }
+
+                        observer.unobserve(img);
+                    }
+                });
+            }, {
+                root: null,
+                rootMargin: '50px',
+                threshold: 0.1
+            });
+
+            lazyImages.forEach(img => imageObserver.observe(img));
+        } else {
+            // Fallback for browsers that don't support IntersectionObserver
+            lazyImages.forEach(img => {
+                const src = img.getAttribute('data-src');
+                if (src) {
+                    img.src = src;
+                    img.removeAttribute('data-src');
+                }
+            });
+        }
     }
 }
 
