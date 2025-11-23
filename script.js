@@ -10,9 +10,11 @@ class LanguageManager {
         // Check for URL language parameter first (highest priority)
         const urlParams = new URLSearchParams(window.location.search);
         const urlLang = urlParams.get('lang');
+
         if (urlLang) {
             // Validate and normalize URL language parameter
             const normalizedLang = this.normalizeLanguageCode(urlLang);
+
             if (normalizedLang) {
                 console.log(`Language from URL parameter: ${urlLang} -> ${normalizedLang}`);
                 // Store URL language preference for future visits
@@ -52,7 +54,9 @@ class LanguageManager {
             'en': 'en'
         };
 
-        return langMap[langCode] || 'en';
+        const result = langMap[langCode] || 'en';
+        console.log('🎯 Final detected language:', result);
+        return result;
     }
 
     normalizeLanguageCode(langCode) {
@@ -175,6 +179,14 @@ class LanguageManager {
 
         // Save preference to localStorage
         localStorage.setItem('totora-language', lang);
+
+        // Update ScreenshotCarousel language
+        if (window.screenshotCarousel) {
+            console.log(`Updating ScreenshotCarousel language to: ${lang}`);
+            window.screenshotCarousel.setLanguage(lang);
+        } else {
+            console.warn(`ScreenshotCarousel not available yet`);
+        }
 
         // Update URL parameter to reflect current language
         this.updateURLLanguageParameter(lang);
@@ -308,7 +320,7 @@ class ScreenshotCarousel {
         this.currentIndex = 0;
         this.screenshots = {};
         this.screenshotCountsLoaded = false;
-        this.currentLanguage = this.detectLanguage();
+        this.currentLanguage = 'en'; // Will be updated by LanguageManager
         this.isAutoPlaying = false;
         this.autoPlayInterval = null;
         this.totalImagesToLoad = 0;
@@ -363,24 +375,30 @@ class ScreenshotCarousel {
     }
 
     async loadScreenshotCounts() {
-        const languageMap = this.getLanguagePathMap();
-        this.screenshots = {};
+        console.log('Loading screenshot counts (hardcoded for reliability)...');
 
-        console.log('Loading screenshot counts dynamically...');
-
-        for (const [langCode, dirPath] of Object.entries(languageMap)) {
-            try {
-                const count = await this.countScreenshotsInDirectory(dirPath);
-                this.screenshots[langCode] = count;
-                console.log(`Found ${count} screenshots for ${langCode} (${dirPath})`);
-            } catch (error) {
-                console.warn(`Failed to count screenshots for ${langCode}: ${error.message}`);
-                this.screenshots[langCode] = 0;
-            }
-        }
+        // Hardcoded screenshot counts based on actual files in directories
+        this.screenshots = {
+            'en': 5,      // English has 5 screenshots (1-5.jpeg)
+            'zh-CN': 5,  // Chinese Simplified has 5 screenshots (1-5.jpeg)
+            'zh-TW': 5,  // Chinese Traditional has 5 screenshots (1-5.jpeg)
+            'ja': 5,     // Japanese has 5 screenshots (1-5.jpeg)
+            'ko': 5,     // Korean has 5 screenshots (1-5.jpeg)
+            'fr': 0,     // Other languages not implemented yet
+            'de': 0,
+            'es': 0,
+            'it': 0,
+            'ru': 0,
+            'ar': 0,
+            'hi': 0,
+            'th': 0,
+            'vi': 0,
+            'id': 0,
+            'pt': 0
+        };
 
         this.screenshotCountsLoaded = true;
-        console.log('Screenshot counts loaded:', this.screenshots);
+        console.log('✅ Screenshot counts loaded:', this.screenshots);
 
         // Trigger initial load after counts are available
         this.loadScreenshots();
@@ -389,7 +407,7 @@ class ScreenshotCarousel {
     // Count JPEG files in a directory
     async countScreenshotsInDirectory(dirPath) {
         const testImages = [];
-        const maxCount = 10; // Reasonable limit to prevent infinite checking
+        const maxCount = 6; // Reduced to 6 since we know max is 5
 
         console.log(`Counting screenshots in directory: ${dirPath}`);
 
@@ -530,6 +548,53 @@ class ScreenshotCarousel {
             console.log('Screenshot count:', this.screenshots[this.currentLanguage]);
             this.loadScreenshots();
         };
+
+        // Show debug info on page
+        this.showDebugInfo();
+    }
+
+    // Method to update language from LanguageManager
+    setLanguage(language) {
+        console.log(`ScreenshotCarousel language updated to: ${language} (was: ${this.currentLanguage})`);
+        this.currentLanguage = language;
+        this.currentIndex = 0; // Reset to first screenshot
+
+        // Reset image tracking
+        this.resetImageTracking();
+
+        // Reload screenshots with new language
+        this.loadScreenshotCounts();
+    }
+
+    showDebugInfo() {
+        const debugDiv = document.createElement('div');
+        debugDiv.id = 'screenshot-debug';
+        debugDiv.style.cssText = `
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            z-index: 9999;
+            max-width: 300px;
+        `;
+
+        let debugHTML = `<strong>Screenshot Debug Info:</strong><br>`;
+        debugHTML += `Current Lang: ${this.currentLanguage}<br>`;
+        debugHTML += `Counts: ${JSON.stringify(this.screenshots)}<br>`;
+
+        debugDiv.innerHTML = debugHTML;
+        document.body.appendChild(debugDiv);
+
+        // Remove after 10 seconds
+        setTimeout(() => {
+            if (debugDiv.parentNode) {
+                debugDiv.parentNode.removeChild(debugDiv);
+            }
+        }, 10000);
     }
 
     loadScreenshots() {
@@ -549,12 +614,15 @@ class ScreenshotCarousel {
         let langPath = this.getLanguagePath(this.currentLanguage);
         let useFallback = false;
 
+        console.log(`loadScreenshots - Language: ${this.currentLanguage}, Path: ${langPath}, Count: ${count}`);
+
         // If current language has 0 screenshots, fallback to English
         if (count === 0) {
             console.log(`No screenshots found for ${this.currentLanguage}, falling back to English`);
             count = this.screenshots['en'] || 0;
             langPath = 'en';
             useFallback = true;
+            console.log(`Using fallback - English count: ${count}`);
         }
 
         if (count === 0) {
@@ -586,8 +654,9 @@ class ScreenshotCarousel {
             // Use lazy loading for all screenshots, including the first one
             img.loading = 'lazy';
             img.setAttribute('data-src', `images/screenshots/${langPath}/${i}.jpeg`);
+            img.src = `images/screenshots/${langPath}/${i}.jpeg`; // Also set src directly for immediate loading
 
-            img.style.display = 'none'; // Hide until loaded
+            // img.style.display = 'none'; // Show immediately for debugging
 
             // Create spinner overlay
             const spinnerOverlay = document.createElement('div');
@@ -626,10 +695,12 @@ class ScreenshotCarousel {
 
             // Add load success handling
             img.addEventListener('load', () => {
+                console.log(`Image ${i} loaded successfully`);
                 // Hide spinner overlay and show image
                 spinnerOverlay.style.display = 'none';
                 img.style.display = 'block';
                 img.classList.add('img-loaded');
+                console.log(`Image ${i} - Display: ${img.style.display}, Visibility: ${window.getComputedStyle(img).display}`);
 
                 // Log which version was loaded
                 if (img.src.includes('/en/')) {
@@ -1064,6 +1135,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         const languageManager = new LanguageManager();
         const screenshotCarousel = new ScreenshotCarousel();
+
+        // Make instances available globally
+        window.languageManager = languageManager;
+        window.screenshotCarousel = screenshotCarousel;
+
         const faqManager = new FAQManager();
 
         // Add store button functionality
