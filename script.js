@@ -365,9 +365,9 @@ class ScreenshotCarousel {
     }
 
     loadScreenshots() {
-        const track = document.getElementById('screenshot-track');
+        const track = document.getElementById('hero-screenshot-track');
         if (!track) {
-            console.error('Screenshot track element not found!');
+            console.error('Hero screenshot track element not found!');
             return;
         }
 
@@ -602,7 +602,7 @@ class ScreenshotCarousel {
         this.updateIndicators();
 
         // Add click handlers to indicators
-        const indicatorsContainer = document.getElementById('carousel-indicators');
+        const indicatorsContainer = document.getElementById('hero-carousel-indicators');
         if (indicatorsContainer) {
             indicatorsContainer.addEventListener('click', (e) => {
                 if (e.target.classList.contains('indicator')) {
@@ -619,8 +619,8 @@ class ScreenshotCarousel {
     }
 
     updateIndicators() {
-        const track = document.getElementById('screenshot-track');
-        const indicatorsContainer = document.getElementById('carousel-indicators');
+        const track = document.getElementById('hero-screenshot-track');
+        const indicatorsContainer = document.getElementById('hero-carousel-indicators');
 
         if (!track || !indicatorsContainer) return;
 

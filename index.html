@@ -20,7 +20,6 @@
                 </div>
                 <div class="nav-menu">
                     <a href="#features" class="nav-link" data-i18n="nav_features">Features</a>
-                    <a href="#screenshots" class="nav-link" data-i18n="nav_screenshots">Screenshots</a>
                     <a href="#support" class="nav-link" data-i18n="nav_support">Support</a>
                     <a href="#privacy" class="nav-link" data-i18n="nav_privacy">Privacy</a>
                     <div class="language-selector">
@@ -79,7 +78,21 @@
                 </div>
             </div>
             <div class="hero-image">
-                <img src="images/hero-main.png" alt="Totora App Preview" class="hero-img" loading="lazy">
+                <!-- Hero Screenshots Carousel -->
+                <div class="hero-screenshots-carousel">
+                    <button class="carousel-btn prev-btn" aria-label="Previous screenshot">❮</button>
+
+                    <div class="carousel-container">
+                        <div class="screenshot-track" id="hero-screenshot-track">
+                            <!-- Screenshots will be dynamically inserted based on current language -->
+                        </div>
+                    </div>
+
+                    <button class="carousel-btn next-btn" aria-label="Next screenshot">❯</button>
+                </div>
+
+                <!-- Hero Carousel Indicators -->
+                <div class="carousel-indicators" id="hero-carousel-indicators"></div>
             </div>
         </div>
     </section>
@@ -176,29 +189,7 @@
         </div>
     </section>
 
-    <!-- Screenshots Section -->
-    <section id="screenshots" class="screenshots">
-        <div class="container">
-            <h2 class="section-title" data-i18n="screenshots_title">App Screenshots</h2>
-
-            <!-- Dynamic Screenshots Carousel -->
-            <div class="screenshots-carousel">
-                <button class="carousel-btn prev-btn" aria-label="Previous screenshot">❮</button>
-
-                <div class="carousel-container">
-                    <div class="screenshot-track" id="screenshot-track">
-                        <!-- Screenshots will be dynamically inserted based on current language -->
-                    </div>
-                </div>
-
-                <button class="carousel-btn next-btn" aria-label="Next screenshot">❯</button>
-            </div>
-
-            <!-- Carousel Indicators -->
-            <div class="carousel-indicators" id="carousel-indicators"></div>
-        </div>
-    </section>
-
+    
     <!-- Support Section -->
     <section id="support" class="support">
         <div class="container">
