@@ -209,28 +209,96 @@ class LanguageManager {
 class ScreenshotCarousel {
     constructor() {
         this.currentIndex = 0;
-        this.screenshots = {
-            en: 6,
-            'zh-CN': 3,
-            'zh-TW': 3,
-            ja: 3,
-            ko: 3,
-            fr: 3,
-            de: 3,
-            es: 3,
-            it: 3,
-            ru: 3,
-            ar: 3,
-            hi: 3,
-            th: 3,
-            vi: 3,
-            id: 3,
-            pt: 3
-        };
+        this.screenshots = {};
+        this.screenshotCountsLoaded = false;
         this.currentLanguage = this.detectLanguage();
         this.isAutoPlaying = false;
         this.autoPlayInterval = null;
         this.init();
+    }
+
+    // Dynamically count JPEG files in screenshot directories
+    async loadScreenshotCounts() {
+        const languageMap = this.getLanguagePathMap();
+        this.screenshots = {};
+
+        console.log('Loading screenshot counts dynamically...');
+
+        for (const [langCode, dirPath] of Object.entries(languageMap)) {
+            try {
+                const count = await this.countScreenshotsInDirectory(dirPath);
+                this.screenshots[langCode] = count;
+                console.log(`Found ${count} screenshots for ${langCode} (${dirPath})`);
+            } catch (error) {
+                console.warn(`Failed to count screenshots for ${langCode}: ${error.message}`);
+                this.screenshots[langCode] = 0;
+            }
+        }
+
+        this.screenshotCountsLoaded = true;
+        console.log('Screenshot counts loaded:', this.screenshots);
+
+        // Trigger initial load after counts are available
+        this.loadScreenshots();
+    }
+
+    // Count JPEG files in a directory
+    async countScreenshotsInDirectory(dirPath) {
+        const testImages = [];
+        const maxCount = 10; // Reasonable limit to prevent infinite checking
+
+        for (let i = 1; i <= maxCount; i++) {
+            const imageUrl = `images/screenshots/${dirPath}/${i}.jpeg`;
+
+            try {
+                const exists = await this.checkImageExists(imageUrl);
+                if (exists) {
+                    testImages.push(imageUrl);
+                } else {
+                    // If we find a gap, assume the count is the previous number
+                    break;
+                }
+            } catch (error) {
+                break;
+            }
+        }
+
+        return testImages.length;
+    }
+
+    // Check if an image exists by trying to load it
+    checkImageExists(url) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => resolve(true);
+            img.onerror = () => resolve(false);
+            img.src = url;
+
+            // Timeout after 3 seconds
+            setTimeout(() => resolve(false), 3000);
+        });
+    }
+
+    // Get language path mapping
+    getLanguagePathMap() {
+        return {
+            'en': 'en',
+            'zh-CN': 'zh-hans',
+            'zh-TW': 'zh-hant',
+            'ja': 'ja',
+            'ko': 'ko',
+            'fr': 'fr',
+            'de': 'de',
+            'es': 'es',
+            'it': 'it',
+            'ru': 'ru',
+            'ar': 'ar',
+            'hi': 'hi',
+            'th': 'th',
+            'vi': 'vi',
+            'id': 'id',
+            'pt': 'pt'
+        };
     }
 
     detectLanguage() {
@@ -269,7 +337,7 @@ class ScreenshotCarousel {
         this.setupAutoPlay();
         this.setupKeyboardNavigation();
         this.setupTouchGestures();
-        this.loadScreenshots();
+        this.loadScreenshotCounts(); // This will call loadScreenshots() when done
 
         // Listen for language changes from LanguageManager
         const languageSelect = document.getElementById('languageSelect');
@@ -303,16 +371,31 @@ class ScreenshotCarousel {
             return;
         }
 
-        const count = this.screenshots[this.currentLanguage] || 3;
-        const langPath = this.getLanguagePath(this.currentLanguage);
-        const fallbackLangPath = 'en'; // Always fallback to English
-
-        console.log(`Loading ${count} screenshots for language: ${this.currentLanguage} (${langPath})`);
-
-        // Check if we're likely to use English fallbacks
-        if (langPath !== 'en' && !this.screenshotDirectoryExists(langPath)) {
-            console.log(`Screenshot directory for ${langPath} not found, will use English fallbacks`);
+        // Wait for screenshot counts to be loaded
+        if (!this.screenshotCountsLoaded) {
+            console.log('Screenshot counts not loaded yet, skipping loadScreenshots');
+            return;
         }
+
+        let count = this.screenshots[this.currentLanguage] || 0;
+        let langPath = this.getLanguagePath(this.currentLanguage);
+        let useFallback = false;
+
+        // If current language has 0 screenshots, fallback to English
+        if (count === 0) {
+            console.log(`No screenshots found for ${this.currentLanguage}, falling back to English`);
+            count = this.screenshots['en'] || 0;
+            langPath = 'en';
+            useFallback = true;
+        }
+
+        if (count === 0) {
+            console.error('No English screenshots available either!');
+            track.innerHTML = '<div style="text-align: center; padding: 40px; color: #999;">No screenshots available</div>';
+            return;
+        }
+
+        console.log(`Loading ${count} screenshots for language: ${this.currentLanguage} (${useFallback ? 'using English fallback' : langPath})`);
 
         // Clear existing screenshots
         track.innerHTML = '';
@@ -450,24 +533,7 @@ class ScreenshotCarousel {
     }
 
     getLanguagePath(language) {
-        const pathMap = {
-            'en': 'en',
-            'zh-CN': 'zh-hans',
-            'zh-TW': 'zh-hant',
-            'ja': 'ja',
-            'ko': 'ko',
-            'fr': 'fr',
-            'de': 'de',
-            'es': 'es',
-            'it': 'it',
-            'ru': 'ru',
-            'ar': 'ar',
-            'hi': 'hi',
-            'th': 'th',
-            'vi': 'vi',
-            'id': 'id',
-            'pt': 'pt'
-        };
+        const pathMap = this.getLanguagePathMap();
         return pathMap[language] || 'en';
     }
 
