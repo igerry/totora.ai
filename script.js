@@ -551,7 +551,7 @@ class ScreenshotCarousel {
     }
 
     getCurrentScreenshotCount() {
-        const track = document.getElementById('screenshot-track');
+        const track = document.getElementById('hero-screenshot-track');
         if (!track) return this.screenshots[this.currentLanguage] || 3;
 
         const screenshotItems = track.querySelectorAll('.screenshot-item');
@@ -559,7 +559,7 @@ class ScreenshotCarousel {
     }
 
     isUsingEnglishFallback() {
-        const track = document.getElementById('screenshot-track');
+        const track = document.getElementById('hero-screenshot-track');
         if (!track) return false;
 
         const firstImg = track.querySelector('.screenshot-item img');
@@ -590,7 +590,7 @@ class ScreenshotCarousel {
     }
 
     updateCarousel() {
-        const track = document.getElementById('screenshot-track');
+        const track = document.getElementById('hero-screenshot-track');
         if (!track) return;
 
         const slideWidth = 100; // percentage
@@ -640,10 +640,11 @@ class ScreenshotCarousel {
     }
 
     setupAutoPlay() {
-        this.startAutoPlay();
+        // Start auto-play after a short delay to ensure screenshots are loaded
+        setTimeout(() => this.startAutoPlay(), 2000);
 
         // Pause on hover
-        const carousel = document.querySelector('.screenshot-carousel');
+        const carousel = document.querySelector('.hero-screenshots-carousel');
         if (carousel) {
             carousel.addEventListener('mouseenter', () => this.stopAutoPlay());
             carousel.addEventListener('mouseleave', () => this.startAutoPlay());
@@ -653,7 +654,7 @@ class ScreenshotCarousel {
     startAutoPlay() {
         if (this.isAutoPlaying) return;
         this.isAutoPlaying = true;
-        this.autoPlayInterval = setInterval(() => this.nextSlide(), 4000);
+        this.autoPlayInterval = setInterval(() => this.nextSlide(), 3000);
     }
 
     stopAutoPlay() {
