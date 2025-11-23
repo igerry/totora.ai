@@ -1402,7 +1402,7 @@ html {
 
 /* Image loading states */
 .img-loading {
-    background: var(--bg-secondary);
+    background: transparent;
     position: relative;
     overflow: hidden;
 }
