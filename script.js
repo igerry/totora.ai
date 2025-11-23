@@ -104,8 +104,8 @@ class LanguageManager {
         console.log(`Language initialization - Current URL: ${window.location.href}`);
         console.log(`Language initialization - Detected language: ${this.currentLang}`);
 
-        // Load initial language translations
-        await this.loadLanguage(this.currentLang);
+        // Load initial language translations and apply them
+        await this.setLanguage(this.currentLang);
 
         // Add event listener for language selector
         const languageSelect = document.getElementById('languageSelect');
