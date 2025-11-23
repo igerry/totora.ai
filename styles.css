@@ -555,7 +555,7 @@ body {
     aspect-ratio: 9/19.5; /* Typical phone screen ratio */
     border-radius: 16px;
     box-shadow: var(--shadow-lg);
-    background: white;
+    background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;

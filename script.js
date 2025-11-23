@@ -325,7 +325,7 @@ class ScreenshotCarousel {
             // Add loading indicator
             const loadingIndicator = document.createElement('div');
             loadingIndicator.className = 'screenshot-loading';
-            loadingIndicator.innerHTML = `<div style="padding: 20px; text-align: center; color: #666; background: #f8f9fa; border-radius: 12px;">Loading screenshot ${i}...</div>`;
+            loadingIndicator.innerHTML = `<div style="padding: 20px; text-align: center; color: #666; background: transparent; border-radius: 12px;">Loading screenshot ${i}...</div>`;
             slide.appendChild(loadingIndicator);
 
             const img = document.createElement('img');
@@ -352,7 +352,7 @@ class ScreenshotCarousel {
                     // If first fallback fails, try different error handling
                     console.warn(`Failed to load English fallback screenshot`);
                     // Show error message
-                    loadingIndicator.innerHTML = `<div style="padding: 20px; text-align: center; color: #999; background: #f8f9fa; border-radius: 12px;">Screenshot ${i} not available</div>`;
+                    loadingIndicator.innerHTML = `<div style="padding: 20px; text-align: center; color: #999; background: transparent; border-radius: 12px;">Screenshot ${i} not available</div>`;
                     loadingIndicator.style.display = 'block';
                 }
             });
@@ -406,7 +406,7 @@ class ScreenshotCarousel {
             // Add loading indicator
             const loadingIndicator = document.createElement('div');
             loadingIndicator.className = 'screenshot-loading';
-            loadingIndicator.innerHTML = `<div style="padding: 20px; text-align: center; color: #666; background: #f8f9fa; border-radius: 12px;">Loading English screenshot ${i}...</div>`;
+            loadingIndicator.innerHTML = `<div style="padding: 20px; text-align: center; color: #666; background: transparent; border-radius: 12px;">Loading English screenshot ${i}...</div>`;
             slide.appendChild(loadingIndicator);
 
             const img = document.createElement('img');
@@ -420,7 +420,7 @@ class ScreenshotCarousel {
             // Add error handling for English screenshots
             img.addEventListener('error', () => {
                 console.warn(`Failed to load English screenshot: ${englishSrc}`);
-                loadingIndicator.innerHTML = `<div style="padding: 30px; background: #f8f9fa; border: 2px dashed #dee2e6; border-radius: 12px; text-align: center; color: #6c757d;">
+                loadingIndicator.innerHTML = `<div style="padding: 30px; background: transparent; border: 2px dashed #dee2e6; border-radius: 12px; text-align: center; color: #6c757d;">
                     <div style="font-size: 2rem; margin-bottom: 10px;">📱</div>
                     <div style="font-weight: 600; margin-bottom: 5px;">Screenshot ${i}</div>
                     <div style="font-size: 0.9rem;">Not Available</div>
