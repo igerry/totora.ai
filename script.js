@@ -329,7 +329,7 @@ class ScreenshotCarousel {
             slide.appendChild(loadingIndicator);
 
             const img = document.createElement('img');
-            const imageSrc = `images/screenshots/${langPath}/${i}-hq.png`;
+            const imageSrc = `images/screenshots/${langPath}/${i}.jpeg`;
             img.src = imageSrc;
             img.alt = `Totora App Screenshot ${i} - ${this.currentLanguage}`;
             img.className = 'screenshot-img';
@@ -342,27 +342,18 @@ class ScreenshotCarousel {
             img.addEventListener('error', () => {
                 if (!fallbackAttempted) {
                     fallbackAttempted = true;
-                    console.warn(`Failed to load HQ screenshot: ${img.src}`);
+                    console.warn(`Failed to load screenshot: ${img.src}`);
 
-                    // Try fallback to non-hq version first
-                    const nonHqSrc = `images/screenshots/${langPath}/${i}.png`;
-                    console.log(`Trying non-HQ fallback: ${nonHqSrc}`);
-                    img.src = nonHqSrc;
+                    // Try fallback to English version
+                    const englishSrc = `images/screenshots/en/${i}.jpeg`;
+                    console.log(`Trying English fallback: ${englishSrc}`);
+                    img.src = englishSrc;
                 } else {
-                    // If non-HQ fails, try English HQ version
-                    console.warn(`Failed to load non-HQ screenshot, trying English fallback`);
-                    const englishHqSrc = `images/screenshots/en/${i}-hq.png`;
-                    console.log(`Trying English HQ fallback: ${englishHqSrc}`);
-                    img.src = englishHqSrc;
-                    img.alt = `Totora App Screenshot ${i} - English`;
-
-                    // Add final error handler for English fallback
-                    img.addEventListener('error', () => {
-                        console.error(`Failed to load English HQ screenshot, trying English non-HQ`);
-                        const englishSrc = `images/screenshots/en/${i}.png`;
-                        console.log(`Trying English non-HQ fallback: ${englishSrc}`);
-                        img.src = englishSrc;
-                    });
+                    // If first fallback fails, try different error handling
+                    console.warn(`Failed to load English fallback screenshot`);
+                    // Show error message
+                    loadingIndicator.innerHTML = `<div style="padding: 20px; text-align: center; color: #999; background: #f8f9fa; border-radius: 12px;">Screenshot ${i} not available</div>`;
+                    loadingIndicator.style.display = 'block';
                 }
             });
 
@@ -419,8 +410,8 @@ class ScreenshotCarousel {
             slide.appendChild(loadingIndicator);
 
             const img = document.createElement('img');
-            const englishHqSrc = `images/screenshots/en/en-${i}-hq.png`;
-            img.src = englishHqSrc;
+            const englishSrc = `images/screenshots/en/${i}.jpeg`;
+            img.src = englishSrc;
             img.alt = `Totora App Screenshot ${i} - English`;
             img.className = 'screenshot-img';
             img.loading = 'lazy';
@@ -428,24 +419,13 @@ class ScreenshotCarousel {
 
             // Add error handling for English screenshots
             img.addEventListener('error', () => {
-                console.warn(`Failed to load English HQ screenshot: ${englishHqSrc}`);
-                const englishSrc = `images/screenshots/en/en-${i}.png`;
-                console.log(`Trying English non-HQ fallback: ${englishSrc}`);
-                img.src = englishSrc;
-
-                img.addEventListener('error', () => {
-                    console.error(`Failed to load English screenshot ${i}`);
-                    loadingIndicator.style.display = 'none';
-                    img.style.display = 'none';
-                    const placeholder = document.createElement('div');
-                    placeholder.className = 'screenshot-placeholder';
-                    placeholder.innerHTML = `<div style="padding: 30px; background: #f8f9fa; border: 2px dashed #dee2e6; border-radius: 12px; text-align: center; color: #6c757d;">
-                        <div style="font-size: 2rem; margin-bottom: 10px;">📱</div>
-                        <div style="font-weight: 600; margin-bottom: 5px;">English Screenshot ${i}</div>
-                        <div style="font-size: 0.9rem;">Not Available</div>
-                    </div>`;
-                    img.parentNode.appendChild(placeholder);
-                });
+                console.warn(`Failed to load English screenshot: ${englishSrc}`);
+                loadingIndicator.innerHTML = `<div style="padding: 30px; background: #f8f9fa; border: 2px dashed #dee2e6; border-radius: 12px; text-align: center; color: #6c757d;">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">📱</div>
+                    <div style="font-weight: 600; margin-bottom: 5px;">Screenshot ${i}</div>
+                    <div style="font-size: 0.9rem;">Not Available</div>
+                </div>`;
+                loadingIndicator.style.display = 'block';
             });
 
             // Add load success handling
