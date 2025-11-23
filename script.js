@@ -391,22 +391,29 @@ class ScreenshotCarousel {
         const testImages = [];
         const maxCount = 10; // Reasonable limit to prevent infinite checking
 
+        console.log(`Counting screenshots in directory: ${dirPath}`);
+
         for (let i = 1; i <= maxCount; i++) {
             const imageUrl = `images/screenshots/${dirPath}/${i}.jpeg`;
 
             try {
                 const exists = await this.checkImageExists(imageUrl);
+                console.log(`Checking ${imageUrl}: ${exists ? 'EXISTS' : 'NOT FOUND'}`);
+
                 if (exists) {
                     testImages.push(imageUrl);
                 } else {
                     // If we find a gap, assume the count is the previous number
+                    console.log(`Screenshot ${i} not found, stopping count at ${testImages.length}`);
                     break;
                 }
             } catch (error) {
+                console.log(`Error checking ${imageUrl}: ${error.message}`);
                 break;
             }
         }
 
+        console.log(`Final count for ${dirPath}: ${testImages.length} screenshots`);
         return testImages.length;
     }
 
@@ -414,12 +421,29 @@ class ScreenshotCarousel {
     checkImageExists(url) {
         return new Promise((resolve) => {
             const img = new Image();
-            img.onload = () => resolve(true);
-            img.onerror = () => resolve(false);
+
+            const cleanup = () => {
+                img.onload = null;
+                img.onerror = null;
+            };
+
+            img.onload = () => {
+                cleanup();
+                resolve(true);
+            };
+
+            img.onerror = () => {
+                cleanup();
+                resolve(false);
+            };
+
             img.src = url;
 
-            // Timeout after 3 seconds
-            setTimeout(() => resolve(false), 3000);
+            // Timeout after 2 seconds (reduced from 3)
+            setTimeout(() => {
+                cleanup();
+                resolve(false);
+            }, 2000);
         });
     }
 
