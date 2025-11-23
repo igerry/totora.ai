@@ -523,7 +523,7 @@ body {
     image-rendering: -webkit-optimize-contrast;
     image-rendering: auto;
     object-fit: contain;
-    background: #000;
+    background: transparent;
     padding: 0;
     margin: 0;
     /* Improve image quality */
@@ -555,7 +555,7 @@ body {
     aspect-ratio: 9/19.5; /* Typical phone screen ratio */
     border-radius: 16px;
     box-shadow: var(--shadow-lg);
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
