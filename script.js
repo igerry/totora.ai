@@ -120,8 +120,7 @@ class LanguageManager {
             });
         }
 
-        // Add event listeners for navigation links
-        this.setupNavigation();
+        // Note: setupNavigation() is called in ScreenshotCarousel.init(), not here
 
         // Add smooth scrolling and animations
         this.setupAnimations();
@@ -541,19 +540,57 @@ class ScreenshotCarousel {
                 // Wait a moment for any potential language processing
                 setTimeout(() => {
                     this.loadScreenshots();
+                    // Re-setup navigation to ensure buttons work after language switch
+                    this.setupNavigation();
                 }, 100);
             });
         }
 
         // Add debug method to window for manual testing
         window.debugScreenshots = () => {
+            console.log('=== Screenshot Carousel Debug ===');
             console.log('Current language:', this.currentLanguage);
-            console.log('Language path:', this.getLanguagePath(this.currentLanguage));
-            console.log('Screenshot count:', this.screenshots[this.currentLanguage]);
-            this.loadScreenshots();
+            console.log('Current index:', this.currentIndex);
+            console.log('Screenshot counts:', this.screenshots);
+            console.log('Screenshot counts loaded:', this.screenshotCountsLoaded);
+            console.log('Total images to load:', this.totalImagesToLoad);
+            console.log('Images loaded:', this.imagesLoaded);
+            console.log('All images loaded:', this.allImagesLoaded);
+
+            const track = document.getElementById('hero-screenshot-track');
+            console.log('Track element found:', !!track);
+            if (track) {
+                console.log('Screenshot items in track:', track.querySelectorAll('.screenshot-item').length);
+            }
+
+            // Test navigation buttons
+            const prevBtn = document.querySelector('.prev-btn');
+            const nextBtn = document.querySelector('.next-btn');
+            console.log('Prev button found:', !!prevBtn);
+            console.log('Next button found:', !!nextBtn);
+
+            if (prevBtn) {
+                console.log('Prev button visible:', prevBtn.style.display !== 'none');
+                console.log('Prev button position:', window.getComputedStyle(prevBtn).position);
+            }
+            if (nextBtn) {
+                console.log('Next button visible:', nextBtn.style.display !== 'none');
+                console.log('Next button position:', window.getComputedStyle(nextBtn).position);
+            }
+
+            console.log('=== End Debug ===');
         };
 
-        // Debug info removed
+        // Add navigation test function
+        window.testNavigation = () => {
+            console.log('Testing navigation manually...');
+            console.log('Before prevSlide - index:', this.currentIndex);
+            this.prevSlide();
+            console.log('After prevSlide - index:', this.currentIndex);
+            console.log('Before nextSlide - index:', this.currentIndex);
+            this.nextSlide();
+            console.log('After nextSlide - index:', this.currentIndex);
+        };
     }
 
     // Method to update language from LanguageManager
@@ -670,9 +707,34 @@ class ScreenshotCarousel {
             `;
 
             let fallbackAttempted = false;
+            let loadHandled = false; // Track if load/error has been handled
 
-            // Add error handling with fallbacks
+            // Set up timeout for image loading (10 seconds)
+            const loadTimeout = setTimeout(() => {
+                if (!loadHandled) {
+                    loadHandled = true;
+                    console.warn(`Screenshot ${i} loading timed out after 10 seconds`);
+
+                    // Show timeout message in spinner overlay
+                    spinnerOverlay.innerHTML = `<div style="padding: 20px; text-align: center; color: #ff6b6b; background: transparent; border-radius: 12px;">
+                        <div style="font-size: 1.5rem; margin-bottom: 10px;">⏱️</div>
+                        <div style="font-weight: 600; margin-bottom: 5px;">Loading Timeout</div>
+                        <div style="font-size: 0.9rem;">Screenshot ${i} took too long to load</div>
+                    </div>`;
+                    spinnerOverlay.style.display = 'flex';
+                    img.style.display = 'block';
+
+                    // Track as completed to avoid blocking other images
+                    this.trackImageLoad();
+                }
+            }, 10000); // 10 second timeout
+
+            // Consolidated error handling with fallbacks
             img.addEventListener('error', () => {
+                if (loadHandled) return; // Don't handle if already handled by timeout
+                loadHandled = true;
+                clearTimeout(loadTimeout); // Clear timeout
+
                 if (!fallbackAttempted) {
                     fallbackAttempted = true;
                     const currentSrc = img.src || img.getAttribute('data-src');
@@ -687,17 +749,41 @@ class ScreenshotCarousel {
                         img.removeAttribute('data-src');
                     }
                     img.src = englishSrc;
+
+                    // Reset timeout for fallback image (5 seconds)
+                    setTimeout(() => {
+                        if (!loadHandled) {
+                            loadHandled = true;
+                            console.warn(`English fallback screenshot ${i} also timed out`);
+
+                            spinnerOverlay.innerHTML = `<div style="padding: 20px; text-align: center; color: #ff6b6b; background: transparent; border-radius: 12px;">
+                                <div style="font-size: 1.5rem; margin-bottom: 10px;">⏱️</div>
+                                <div style="font-weight: 600; margin-bottom: 5px;">Loading Failed</div>
+                                <div style="font-size: 0.9rem;">Screenshot ${i} unavailable</div>
+                            </div>`;
+                            spinnerOverlay.style.display = 'flex';
+                            img.style.display = 'block';
+
+                            // Track as completed to avoid blocking other images
+                            this.trackImageLoad();
+                        }
+                    }, 5000); // 5 second timeout for fallback
                 } else {
-                    // If first fallback fails, try different error handling
+                    // If first fallback fails, show error message and hide spinner
                     console.warn(`Failed to load English fallback screenshot`);
                     // Show error message in spinner overlay
                     spinnerOverlay.innerHTML = `<div style="padding: 20px; text-align: center; color: #999; background: transparent; border-radius: 12px;">Screenshot ${i} not available</div>`;
                     spinnerOverlay.style.display = 'flex';
+                    img.style.display = 'block';
                 }
             });
 
             // Add load success handling
             img.addEventListener('load', () => {
+                if (loadHandled) return; // Don't handle if already handled by timeout
+                loadHandled = true;
+                clearTimeout(loadTimeout); // Clear timeout
+
                 console.log(`Image ${i} loaded successfully`);
                 // Hide spinner overlay and show image
                 spinnerOverlay.style.display = 'none';
@@ -738,11 +824,6 @@ class ScreenshotCarousel {
                 }
             });
 
-            // Add error handling to hide spinner on error too
-            img.addEventListener('error', () => {
-                spinnerOverlay.style.display = 'none';
-            });
-
             // Append elements in correct order
             slide.appendChild(spinnerOverlay);
             slide.appendChild(img);
@@ -779,8 +860,32 @@ class ScreenshotCarousel {
                 <div class="screenshot-spinner-text">Loading English screenshot ${i}...</div>
             `;
 
+            let loadHandled = false;
+
+            // Set up timeout for additional English screenshot loading (8 seconds)
+            const loadTimeout = setTimeout(() => {
+                if (!loadHandled) {
+                    loadHandled = true;
+                    console.warn(`Additional English screenshot ${i} loading timed out after 8 seconds`);
+
+                    spinnerOverlay.innerHTML = `<div style="padding: 20px; text-align: center; color: #ff6b6b; background: transparent; border-radius: 12px;">
+                        <div style="font-size: 1.5rem; margin-bottom: 10px;">⏱️</div>
+                        <div style="font-weight: 600; margin-bottom: 5px;">Loading Timeout</div>
+                        <div style="font-size: 0.9rem;">English screenshot ${i} took too long</div>
+                    </div>`;
+                    spinnerOverlay.style.display = 'flex';
+                    img.style.display = 'block';
+
+                    // Track as completed to avoid blocking other images
+                    this.trackImageLoad();
+                }
+            }, 8000); // 8 second timeout for additional screenshots
+
             // Add error handling for English screenshots
             img.addEventListener('error', () => {
+                if (loadHandled) return; // Don't handle if already handled by timeout
+                loadHandled = true;
+                clearTimeout(loadTimeout); // Clear timeout
                 const englishSrc = `images/screenshots/en/${i}.jpeg`;
                 console.warn(`Failed to load English screenshot: ${englishSrc}`);
 
@@ -796,11 +901,19 @@ class ScreenshotCarousel {
                         <div style="font-size: 0.9rem;">Not Available</div>
                     </div>`;
                     spinnerOverlay.style.display = 'flex';
+                    img.style.display = 'block';
+
+                    // Track as completed to avoid blocking other images
+                    this.trackImageLoad();
                 }
             });
 
             // Add load success handling
             img.addEventListener('load', () => {
+                if (loadHandled) return; // Don't handle if already handled by timeout
+                loadHandled = true;
+                clearTimeout(loadTimeout); // Clear timeout
+
                 // Hide spinner overlay and show image
                 spinnerOverlay.style.display = 'none';
                 img.style.display = 'block';
@@ -847,15 +960,23 @@ class ScreenshotCarousel {
         console.log('Setup Navigation - nextBtn found:', !!nextBtn);
 
         if (prevBtn) {
-            prevBtn.addEventListener('click', () => {
-                console.log('Prev button clicked');
+            // Remove existing event listeners by cloning the button
+            const newPrevBtn = prevBtn.cloneNode(true);
+            prevBtn.parentNode.replaceChild(newPrevBtn, prevBtn);
+
+            newPrevBtn.addEventListener('click', () => {
+                console.log('Prev button clicked - current index:', this.currentIndex);
                 this.prevSlide();
             });
         }
 
         if (nextBtn) {
-            nextBtn.addEventListener('click', () => {
-                console.log('Next button clicked');
+            // Remove existing event listeners by cloning the button
+            const newNextBtn = nextBtn.cloneNode(true);
+            nextBtn.parentNode.replaceChild(newNextBtn, nextBtn);
+
+            newNextBtn.addEventListener('click', () => {
+                console.log('Next button clicked - current index:', this.currentIndex);
                 this.nextSlide();
             });
         }
@@ -887,6 +1008,13 @@ class ScreenshotCarousel {
     prevSlide() {
         const count = this.getCurrentScreenshotCount();
         console.log(`prevSlide() - Current index: ${this.currentIndex}, Count: ${count}`);
+
+        // Guard against count being 0 (happens during language switch before screenshots load)
+        if (count === 0) {
+            console.log('prevSlide() - No screenshots available yet, skipping navigation');
+            return;
+        }
+
         this.currentIndex = (this.currentIndex - 1 + count) % count;
         console.log(`prevSlide() - New index: ${this.currentIndex}`);
         this.updateCarousel();
@@ -901,6 +1029,13 @@ class ScreenshotCarousel {
     nextSlide() {
         const count = this.getCurrentScreenshotCount();
         console.log(`nextSlide() - Current index: ${this.currentIndex}, Count: ${count}`);
+
+        // Guard against count being 0 (happens during language switch before screenshots load)
+        if (count === 0) {
+            console.log('nextSlide() - No screenshots available yet, skipping navigation');
+            return;
+        }
+
         this.currentIndex = (this.currentIndex + 1) % count;
         console.log(`nextSlide() - New index: ${this.currentIndex}`);
         this.updateCarousel();
