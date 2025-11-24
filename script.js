@@ -336,8 +336,9 @@ class ScreenshotCarousel {
 
         if (this.imagesLoaded === this.totalImagesToLoad && this.totalImagesToLoad > 0) {
             this.allImagesLoaded = true;
-            console.log('All images loaded! Enabling autoscroll.');
-            this.enableAutoScroll();
+            console.log('All images loaded! Auto-scroll is disabled.');
+            // Auto-scroll functionality completely removed
+            // this.enableAutoScroll(); // REMOVED - Auto-scroll disabled
         }
     }
 
@@ -349,28 +350,17 @@ class ScreenshotCarousel {
     }
 
     enableAutoScroll() {
-        // Only start autoscroll if all images are loaded
-        if (this.allImagesLoaded) {
-            // Remove any existing hover listeners to prevent duplicates
-            const carousel = document.querySelector('.hero-screenshots-carousel');
-            if (carousel) {
-                const newCarousel = carousel.cloneNode(true);
-                carousel.parentNode.replaceChild(newCarousel, carousel);
-            }
-
-            // setTimeout(() => this.startAutoPlay(), 2000); // Auto-play disabled
-
-            // Auto-play hover events disabled
-            // const freshCarousel = document.querySelector('.hero-screenshots-carousel');
-            // if (freshCarousel) {
-            //     freshCarousel.addEventListener('mouseenter', () => this.stopAutoPlay());
-            //     freshCarousel.addEventListener('mouseleave', () => this.startAutoPlay());
-            // }
-        }
+        // Auto-scroll functionality completely disabled
+        console.log('enableAutoScroll() called - Auto-scroll is completely disabled');
+        // No auto-scroll functionality will be implemented
+        return;
     }
 
     disableAutoScroll() {
-        this.stopAutoPlay();
+        // Auto-scroll functionality completely disabled
+        console.log('disableAutoScroll() called - Auto-scroll is completely disabled');
+        // No auto-scroll functionality to disable
+        return;
     }
 
     async loadScreenshotCounts() {
@@ -540,8 +530,10 @@ class ScreenshotCarousel {
                 // Wait a moment for any potential language processing
                 setTimeout(() => {
                     this.loadScreenshots();
-                    // Re-setup navigation to ensure buttons work after language switch
-                    this.setupNavigation();
+                    // Re-setup navigation after a slight delay to ensure screenshots are loaded
+                    setTimeout(() => {
+                        this.setupNavigation();
+                    }, 200);
                 }, 100);
             });
         }
@@ -590,6 +582,60 @@ class ScreenshotCarousel {
             console.log('Before nextSlide - index:', this.currentIndex);
             this.nextSlide();
             console.log('After nextSlide - index:', this.currentIndex);
+        };
+
+        // Add navigation buttons debug function
+        window.debugNavigationButtons = () => {
+            console.log('=== Navigation Buttons Debug ===');
+            const prevBtn = document.querySelector('.prev-btn');
+            const nextBtn = document.querySelector('.next-btn');
+
+            console.log('Prev button element:', prevBtn);
+            console.log('Next button element:', nextBtn);
+
+            if (prevBtn) {
+                const listeners = getEventListeners ? getEventListeners(prevBtn) : 'N/A (use Chrome DevTools)';
+                console.log('Prev button listeners:', listeners);
+                console.log('Prev button visible:', prevBtn.style.display !== 'none');
+                console.log('Prev button position:', window.getComputedStyle(prevBtn).position);
+            }
+
+            if (nextBtn) {
+                const listeners = getEventListeners ? getEventListeners(nextBtn) : 'N/A (use Chrome DevTools)';
+                console.log('Next button listeners:', listeners);
+                console.log('Next button visible:', nextBtn.style.display !== 'none');
+                console.log('Next button position:', window.getComputedStyle(nextBtn).position);
+            }
+
+            console.log('Current carousel state:');
+            console.log('- allImagesLoaded:', this.allImagesLoaded);
+            console.log('- currentIndex:', this.currentIndex);
+            console.log('- getCurrentScreenshotCount():', this.getCurrentScreenshotCount());
+            console.log('=== End Debug ===');
+        };
+
+        // Add language switch debug function
+        window.debugLanguageSwitch = () => {
+            console.log('=== Language Switch Debug ===');
+            console.log('Current language:', this.currentLanguage);
+            console.log('Current index:', this.currentIndex);
+            console.log('Expected count:', this.screenshots[this.currentLanguage]);
+            console.log('Actual count:', this.getCurrentScreenshotCount());
+
+            const track = document.getElementById('hero-screenshot-track');
+            if (track) {
+                const items = track.querySelectorAll('.screenshot-item');
+                console.log('Items in track:', items.length);
+            }
+
+            const prevBtn = document.querySelector('.prev-btn');
+            const nextBtn = document.querySelector('.next-btn');
+            console.log('Prev button exists:', !!prevBtn);
+            console.log('Next button exists:', !!nextBtn);
+
+            // Test the count method
+            console.log('getCurrentScreenshotCount():', this.getCurrentScreenshotCount());
+            console.log('=== End Debug ===');
         };
     }
 
@@ -987,6 +1033,14 @@ class ScreenshotCarousel {
         if (!track) return this.screenshots[this.currentLanguage] || 3;
 
         const screenshotItems = track.querySelectorAll('.screenshot-item');
+
+        // If no items in track (during loading), use expected count from language data
+        if (screenshotItems.length === 0) {
+            const expectedCount = this.screenshots[this.currentLanguage] || this.screenshots['en'] || 3;
+            console.log(`getCurrentScreenshotCount() - Using expected count for ${this.currentLanguage}: ${expectedCount}`);
+            return expectedCount;
+        }
+
         return screenshotItems.length;
     }
 
@@ -1054,9 +1108,22 @@ class ScreenshotCarousel {
             return;
         }
 
+        const screenshotItems = track.querySelectorAll('.screenshot-item');
+        if (screenshotItems.length === 0) {
+            console.log('updateCarousel() - No screenshots in track, skipping update');
+            return;
+        }
+
+        // Ensure currentIndex is within bounds
+        const count = screenshotItems.length;
+        if (this.currentIndex >= count) {
+            this.currentIndex = count - 1;
+            console.log(`updateCarousel() - Adjusted index to ${this.currentIndex} (count: ${count})`);
+        }
+
         const slideWidth = 100; // percentage
         const offset = -this.currentIndex * slideWidth;
-        console.log(`updateCarousel() - Index: ${this.currentIndex}, Offset: ${offset}%`);
+        console.log(`updateCarousel() - Index: ${this.currentIndex}, Offset: ${offset}%, Count: ${count}`);
         track.style.transform = `translateX(${offset}%)`;
     }
 
@@ -1108,32 +1175,26 @@ class ScreenshotCarousel {
     }
 
     startAutoPlay() {
-        // Auto-play disabled
-        console.log('Auto-play is disabled');
+        // Auto-play functionality completely disabled
+        console.log('startAutoPlay() called - Auto-play is completely disabled');
         return;
-
-        // Only start autoplay if all images are loaded
-        if (!this.allImagesLoaded) {
-            console.log('Cannot start autoplay - images not fully loaded yet');
-            return;
-        }
-
-        if (this.isAutoPlaying) return;
-        this.isAutoPlaying = true;
-        this.autoPlayInterval = setInterval(() => this.nextSlide(), 3000);
-        console.log('Autoplay started - all images loaded');
     }
 
     stopAutoPlay() {
+        // Auto-play functionality completely disabled
+        console.log('stopAutoPlay() called - Auto-play is completely disabled');
         this.isAutoPlaying = false;
         if (this.autoPlayInterval) {
             clearInterval(this.autoPlayInterval);
+            this.autoPlayInterval = null;
         }
+        return;
     }
 
     resetAutoPlay() {
-        this.stopAutoPlay();
-        this.startAutoPlay();
+        // Auto-play functionality completely disabled
+        console.log('resetAutoPlay() called - Auto-play is completely disabled');
+        return;
     }
 
     setupKeyboardNavigation() {

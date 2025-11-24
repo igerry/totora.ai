@@ -127,8 +127,11 @@ A performance-optimized, responsive one-page website for the Totora AI-powered b
 
 #### Bug Fixes (Latest)
 - **Fixed loading spinner persistence issue** - Resolved race condition in screenshot loading where spinners remained visible after images loaded successfully
+- **Fixed navigation buttons after image loading** - Resolved critical issue where prev/next buttons stopped working after all screenshots loaded (caused by DOM replacement in enableAutoScroll)
+- **Completely disabled auto-scroll functionality** - Removed all auto-scroll logic to prevent DOM manipulation and event listener conflicts
 - **Consolidated error handling** - Removed duplicate event listeners that caused conflicting spinner states
 - **Enhanced fallback mechanisms** - Improved error handling for additional English screenshots
+- **Added comprehensive timeout handling** - Prevents infinite loading states with 10-second timeouts for all screenshot loading scenarios
 
 #### Performance Optimizations
 - **96% image size reduction** (5.5MB → 232KB) while maintaining visual quality
