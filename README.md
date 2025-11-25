@@ -4,11 +4,23 @@ A performance-optimized, responsive one-page website for the Totora AI-powered b
 
 ## Features
 
-### 🌍 Multilingual Support
-- English (en)
-- 简体中文 (zh-CN)
-- 繁體中文 (zh-TW)
-- 日本語 (ja)
+### 🌍 Comprehensive Multilingual Support
+- **English** (en) - Full translation support with 6 app screenshots
+- **简体中文** (zh-CN) - Complete Chinese Simplified localization with 3 app screenshots
+- **繁體中文** (zh-TW) - Traditional Chinese localization with 3 app screenshots
+- **日本語** (ja) - Japanese localization with 3 app screenshots
+- **한국어** (ko) - Korean localization with 3 app screenshots
+- **Français** (fr) - French localization (screenshots coming soon)
+- **Deutsch** (de) - German localization (screenshots coming soon)
+- **Español** (es) - Spanish localization (screenshots coming soon)
+- **Italiano** (it) - Italian localization (screenshots coming soon)
+- **Русский** (ru) - Russian localization (screenshots coming soon)
+- **العربية** (ar) - Arabic localization (screenshots coming soon)
+- **हिन्दी** (hi) - Hindi localization (screenshots coming soon)
+- **ไทย** (th) - Thai localization (screenshots coming soon)
+- **Tiếng Việt** (vi) - Vietnamese localization (screenshots coming soon)
+- **Bahasa Indonesia** (id) - Indonesian localization (screenshots coming soon)
+- **Português** (pt) - Portuguese localization (screenshots coming soon)
 
 ### 📱 Official Store Integration
 - **Apple App Store** - Official iOS download badge with Apple branding
@@ -66,10 +78,28 @@ A performance-optimized, responsive one-page website for the Totora AI-powered b
 │   ├── app-icon-*.png      # Logo variations for different sizes
 │   ├── hero-main.png       # Main hero illustration
 │   └── screenshots/        # Language-specific app screenshots
-│       ├── en/             # English screenshots (6 images)
-│       ├── zh-hans/        # Chinese Simplified screenshots (3 images)
-│       ├── zh-hant/        # Chinese Traditional screenshots (3 images)
-│       └── ja/             # Japanese screenshots (3 images)
+│       ├── en/             # English screenshots (5 JPEG images)
+│       ├── zh-hans/        # Chinese Simplified screenshots (5 JPEG images)
+│       ├── zh-hant/        # Chinese Traditional screenshots (5 JPEG images)
+│       ├── ja/             # Japanese screenshots (5 JPEG images)
+│       └── ko/             # Korean screenshots (5 JPEG images)
+├── lang/                   # Translation files for all supported languages
+│   ├── en.json             # English translations (147 keys)
+│   ├── zh-CN.json          # Chinese Simplified (144 keys)
+│   ├── zh-TW.json          # Chinese Traditional (144 keys)
+│   ├── ja.json             # Japanese translations (144 keys)
+│   ├── ko.json             # Korean translations (156 keys)
+│   ├── fr.json             # French translations (156 keys)
+│   ├── de.json             # German translations (156 keys)
+│   ├── es.json             # Spanish translations (156 keys)
+│   ├── it.json             # Italian translations (156 keys)
+│   ├── ru.json             # Russian translations (156 keys)
+│   ├── ar.json             # Arabic translations (156 keys)
+│   ├── hi.json             # Hindi translations (156 keys)
+│   ├── th.json             # Thai translations (156 keys)
+│   ├── vi.json             # Vietnamese translations (117 keys)
+│   ├── id.json             # Indonesian translations (117 keys)
+│   └── pt.json             # Portuguese translations (117 keys)
 └── README.md               # This file
 ```
 
@@ -105,11 +135,16 @@ A performance-optimized, responsive one-page website for the Totora AI-powered b
 
 ### Core Components
 
-#### Language Management System
-- **`LanguageManager` class** (script.js:423-582) handles detection, switching, and persistence
-- **Browser language detection** with intelligent fallbacks
-- **LocalStorage persistence** for user language preferences
-- **Dynamic content updates** across all UI elements
+#### Advanced Language Management System
+- **`LanguageManager` class** (script.js:2-420) handles comprehensive multilingual functionality
+- **17 language support** with JSON-based translation system in `/lang/` directory
+- **Smart language detection**: URL parameters → LocalStorage → Browser language → Fallback
+- **URL language parameters** support for shareable language-specific links
+- **LocalStorage persistence** for user language preferences across sessions
+- **Dynamic content updates** across all UI elements using `data-i18n` attributes
+- **Language-specific screenshot carousels** with different image counts per language
+- **Real-time language switching** without page reload
+- **Language code normalization** supporting various input formats
 
 #### Screenshot Carousel System
 - **`ScreenshotCarousel` class** (script.js:585-912) manages multi-language screenshots
