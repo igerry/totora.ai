@@ -12,9 +12,10 @@ A performance-optimized, responsive one-page website for the Totora AI-powered b
 
 ### 📱 Official Store Integration
 - **Apple App Store** - Official iOS download badge with Apple branding
-- **Google Play Store** - Official Android download badge with Google branding
-- **Responsive Design** - Optimized store badges for all screen sizes
+- **Google Play** - Android button with "Coming Soon" status
+- **Responsive Design** - Optimized store badges for all screen sizes (horizontal layout on all devices)
 - **Smooth Interactions** - Custom hover effects and micro-animations
+- **Visual Distinction** - Different styling for available vs coming soon apps
 
 ### ⭐ App Features Showcased
 1. **AI-Powered Stories** - Advanced AI technology for unique story generation

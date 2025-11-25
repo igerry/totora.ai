@@ -202,8 +202,9 @@ body {
 .store-buttons {
     display: flex;
     gap: 1rem;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
+    justify-content: flex-start;
 }
 
 .store-button {
@@ -217,9 +218,10 @@ body {
     position: relative;
     background: #000;
     color: white;
-    min-width: 180px;
+    min-width: 160px;
+    flex: 0 0 auto;
     height: 56px;
-    padding: 14px 24px;
+    padding: 14px 20px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
@@ -283,6 +285,28 @@ body {
     background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
 }
 
+.google-play-button {
+    background: linear-gradient(135deg, #01875f 0%, #0288d1 100%);
+    cursor: default;
+}
+
+.coming-soon {
+    opacity: 0.85;
+    position: relative;
+}
+
+.coming-soon::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    pointer-events: none;
+}
+
 
 .store-button:hover {
     transform: translateY(-2px) scale(1.02);
@@ -298,6 +322,38 @@ body {
 .app-store-button:hover {
     background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
     box-shadow: 0 8px 25px rgba(52, 199, 89, 0.2);
+}
+
+.google-play-button:hover {
+    background: linear-gradient(135deg, #0288d1 0%, #01875f 100%);
+    box-shadow: 0 8px 25px rgba(1, 135, 95, 0.3);
+}
+
+.coming-soon:hover {
+    transform: translateY(-1px) scale(1.01);
+    opacity: 0.9;
+}
+
+/* Ensure store buttons stay on same line for medium screens */
+@media (max-width: 768px) {
+    .store-buttons {
+        gap: 0.75rem;
+        justify-content: center;
+    }
+
+    .store-button {
+        min-width: 150px;
+        padding: 12px 18px;
+        font-size: 0.9rem;
+    }
+
+    .store-line-small {
+        font-size: 0.65rem;
+    }
+
+    .store-line-large {
+        font-size: 1rem;
+    }
 }
 
 
@@ -1335,25 +1391,28 @@ body {
 
     .store-buttons {
         justify-content: center;
-        flex-direction: column;
+        flex-direction: row;
         width: 100%;
-        max-width: 280px;
+        max-width: 320px;
+        gap: 0.5rem;
     }
 
     .store-button {
         width: 100%;
-        max-width: 280px;
-        min-width: auto;
+        max-width: 155px;
+        min-width: 145px;
         height: 50px;
-        padding: 12px 20px;
+        padding: 10px 12px;
+        flex: 1 1 auto;
     }
 
     .store-line-large {
-        font-size: 18px;
+        font-size: 14px;
+        font-weight: 600;
     }
 
     .store-line-small {
-        font-size: 9px;
+        font-size: 8px;
     }
 
     .store-icon {
@@ -1440,14 +1499,18 @@ body {
     }
 
     .store-buttons {
-        gap: 0.75rem;
+        gap: 0.5rem;
+        justify-content: center;
+        max-width: 300px;
     }
 
     .store-button {
         min-width: 140px;
+        max-width: 148px;
         height: 45px;
-        padding: 10px 16px;
+        padding: 8px 12px;
         border-radius: 10px;
+        flex: 1 1 auto;
     }
 
     .store-icon {
@@ -1463,11 +1526,12 @@ body {
     }
 
     .store-line-large {
-        font-size: 16px;
+        font-size: 13px;
+        font-weight: 600;
     }
 
     .store-line-small {
-        font-size: 8px;
+        font-size: 7px;
     }
 
     .store-button-content {
