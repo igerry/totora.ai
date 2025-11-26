@@ -151,6 +151,17 @@ body {
     display: none;
     flex-direction: column;
     cursor: pointer;
+    z-index: 1001;
+    padding: 8px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.hamburger:hover {
+    background-color: rgba(90, 200, 250, 0.1);
 }
 
 .hamburger span {
@@ -159,6 +170,7 @@ body {
     background: var(--text-primary);
     margin: 3px 0;
     transition: 0.3s;
+    pointer-events: none;
 }
 
 /* Hero Section */
@@ -1354,20 +1366,30 @@ body {
 @media (max-width: 768px) {
     .nav-menu {
         position: fixed;
-        left: -100%;
-        top: 70px;
+        top: 72px; /* Position at the bottom of header (nav-container 1rem + 1rem padding + 20px logo) */
+        left: 0;
         flex-direction: column;
         background: white;
         width: 100%;
         text-align: center;
-        transition: 0.3s;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         box-shadow: var(--shadow);
-        padding: 2rem 0;
+        padding: 1.5rem 0;
         gap: 1rem;
+        z-index: 998; /* Lower than header (1000) but higher than content */
+        max-height: calc(100vh - 72px); /* Account for header height */
+        overflow-y: auto;
+        transform-origin: top;
+        transform: scaleY(0) translateY(-20px);
+        opacity: 0;
+        visibility: hidden;
+        border-top: 1px solid var(--border-color);
     }
 
     .nav-menu.active {
-        left: 0;
+        transform: scaleY(1) translateY(0);
+        opacity: 1;
+        visibility: visible;
     }
 
     .hamburger {

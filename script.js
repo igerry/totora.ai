@@ -232,17 +232,65 @@ class LanguageManager {
         const navMenu = document.querySelector('.nav-menu');
 
         if (hamburger && navMenu) {
-            hamburger.addEventListener('click', () => {
+            // Remove any existing event listeners by cloning the hamburger element
+            const newHamburger = hamburger.cloneNode(true);
+            hamburger.parentNode.replaceChild(newHamburger, hamburger);
+
+            // Update the reference to the new element
+            const hamburgerElement = newHamburger;
+
+            // Handle both click and touch events for better mobile support
+            const toggleMenu = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
                 navMenu.classList.toggle('active');
-                hamburger.classList.toggle('active');
-            });
+                hamburgerElement.classList.toggle('active');
+
+                // Prevent body scroll when menu is open
+                if (navMenu.classList.contains('active')) {
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    document.body.style.overflow = '';
+                }
+            };
+
+            // Add both click and touchend events
+            hamburgerElement.addEventListener('click', toggleMenu);
+            hamburgerElement.addEventListener('touchend', toggleMenu);
 
             // Close mobile menu when clicking on a link
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.addEventListener('click', () => {
                     navMenu.classList.remove('active');
-                    hamburger.classList.remove('active');
+                    hamburgerElement.classList.remove('active');
+                    document.body.style.overflow = '';
                 });
+
+                // Also handle touch events for menu links
+                link.addEventListener('touchend', () => {
+                    navMenu.classList.remove('active');
+                    hamburgerElement.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!hamburgerElement.contains(e.target) && !navMenu.contains(e.target)) {
+                    navMenu.classList.remove('active');
+                    hamburgerElement.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+
+            // Handle touch events outside menu
+            document.addEventListener('touchend', (e) => {
+                if (!hamburgerElement.contains(e.target) && !navMenu.contains(e.target)) {
+                    navMenu.classList.remove('active');
+                    hamburgerElement.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
             });
         }
 
@@ -1361,6 +1409,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.screenshotCarousel = screenshotCarousel;
 
         const faqManager = new FAQManager();
+
+        // Setup mobile navigation (hamburger menu)
+        languageManager.setupNavigation();
 
         // Add store button functionality
         const appStoreButton = document.querySelector('.app-store-button');
