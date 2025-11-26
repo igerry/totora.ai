@@ -103,6 +103,78 @@ class LanguageManager {
         return supportedLanguages[normalizedInput] || null;
     }
 
+    handlePageParameter() {
+        // Check for page parameter in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const pageParam = urlParams.get('page');
+
+        if (pageParam) {
+            console.log(`🎯 Page parameter detected: ${pageParam}`);
+
+            // Map page parameters to section IDs
+            const pageToSection = {
+                'features': 'features',
+                'support': 'support',
+                'privacy': 'privacy',
+                'about': 'features', // Fallback to features
+                'help': 'support', // Fallback to support
+                'policy': 'privacy' // Fallback to privacy
+            };
+
+            const targetSection = pageToSection[pageParam.toLowerCase()];
+
+            if (targetSection) {
+                // Wait a moment for the page to fully load before scrolling
+                setTimeout(() => {
+                    const targetElement = document.getElementById(targetSection);
+                    if (targetElement) {
+                        console.log(`📍 Scrolling to section: ${targetSection}`);
+
+                        // Smooth scroll to the section
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+
+                        // Update active nav link
+                        this.updateActiveNavLink(targetSection);
+
+                        // Add highlight effect to the section
+                        this.highlightSection(targetElement);
+                    } else {
+                        console.warn(`⚠️ Section not found: ${targetSection}`);
+                    }
+                }, 500); // 500ms delay to ensure all content is loaded
+            } else {
+                console.warn(`⚠️ Unknown page parameter: ${pageParam}`);
+            }
+        }
+    }
+
+    updateActiveNavLink(sectionId) {
+        // Remove active class from all nav links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.classList.remove('active');
+        });
+
+        // Add active class to the corresponding nav link
+        const targetLink = document.querySelector(`.nav-link[href="#${sectionId}"]`);
+        if (targetLink) {
+            targetLink.classList.add('active');
+        }
+    }
+
+    highlightSection(element) {
+        // Add a temporary highlight effect to the section
+        element.style.transition = 'background-color 0.3s ease-in-out';
+        element.style.backgroundColor = 'rgba(90, 200, 250, 0.05)';
+
+        // Remove the highlight after 2 seconds
+        setTimeout(() => {
+            element.style.backgroundColor = '';
+        }, 2000);
+    }
+
     async init() {
         // Log language detection info for debugging
         console.log(`Language initialization - Current URL: ${window.location.href}`);
@@ -121,6 +193,9 @@ class LanguageManager {
         }
 
         // Note: setupNavigation() is called in ScreenshotCarousel.init(), not here
+
+        // Handle page parameter for direct navigation
+        this.handlePageParameter();
 
         // Add smooth scrolling and animations
         this.setupAnimations();

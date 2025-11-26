@@ -52,6 +52,19 @@ A performance-optimized, responsive one-page website for the Totora AI-powered b
 - **Keyboard Navigation**: Arrow key controls for accessibility
 - **Auto-Play**: 4-second intervals with pause on hover
 
+### 🔗 URL Page Navigation
+- **Direct Section Access**: Use URL parameters to navigate directly to specific sections
+- **Supported Pages**: `page=features`, `page=support`, `page=privacy`
+- **Fallback Support**: Alternative parameters like `about`, `help`, `policy` also work
+- **Smooth Scrolling**: Automatic smooth scroll to target section with highlight effect
+- **Language Combinations**: Combine with language parameters for localized direct links
+
+**Example URLs:**
+- `index.html?page=features` - Direct to Features section
+- `index.html?page=support` - Direct to Support section
+- `index.html?page=privacy` - Direct to Privacy section
+- `index.html?lang=zh-CN&page=features` - Chinese localized Features section
+
 ### ⚡ Performance Optimizations
 - **Image Optimization**: Reduced total image size from 5.5MB to 232KB
 - **Lazy Loading**: Images load only when needed
@@ -158,6 +171,13 @@ A performance-optimized, responsive one-page website for the Totora AI-powered b
 - **`FAQManager` class** (script.js:915-977) handles collapsible sections
 - **Smooth animations** with CSS transitions
 - **Single-item expansion** policy for better UX
+
+#### URL Page Navigation System
+- **`handlePageParameter()` method** (script.js:106-152) processes URL page parameters
+- **Direct section navigation** with smooth scrolling and highlighting
+- **Flexible parameter mapping** supporting aliases (about→features, help→support, policy→privacy)
+- **Active navigation state** management with automatic link highlighting
+- **Visual feedback** with temporary section highlighting for better UX
 
 ### Recent Updates
 
