@@ -496,17 +496,17 @@ class ScreenshotCarousel {
             'zh-TW': 5,  // Chinese Traditional has 5 screenshots (1-5.jpeg)
             'ja': 5,     // Japanese has 5 screenshots (1-5.jpeg)
             'ko': 5,     // Korean has 5 screenshots (1-5.jpeg)
-            'fr': 0,     // Other languages not implemented yet
-            'de': 0,
-            'es': 0,
-            'it': 0,
-            'ru': 0,
-            'ar': 0,
-            'hi': 0,
-            'th': 0,
-            'vi': 0,
-            'id': 0,
-            'pt': 0
+            'fr': 5,     
+            'de': 5,
+            'es': 5,
+            'it': 5,
+            'ru': 5,
+            'ar': 5,
+            'hi': 5,
+            'th': 5,
+            'vi': 5,
+            'id': 5,
+            'pt': 5
         };
 
         this.screenshotCountsLoaded = true;
